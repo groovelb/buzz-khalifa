@@ -2,7 +2,6 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useScroll, RoundedBox, Html } from '@react-three/drei';
-import { useSprings, animated, config } from '@react-spring/three';
 import * as THREE from 'three';
 
 export const tierData = [
@@ -17,86 +16,107 @@ export const tierData = [
   { id: 8, height: 0.7, radius: 0.5, rotation: 320 },
 ];
 
-const AnimatedRoundedBox = animated(RoundedBox);
-
 const Setbacks: React.FC = () => {
   const scroll = useScroll();
   const groupRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
+  const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
 
   const tiers = useMemo(() => {
     let currentY = 0.5;
     return tierData.map((tier) => {
-      const pos = [0, currentY, 0];
+      const pos = [0, currentY, 0] as [number, number, number];
       currentY += tier.height;
       return { ...tier, position: pos };
     });
   }, []);
 
-  const [springs, api] = useSprings(tiers.length, (index) => ({
-    scale: [0, 0, 0],
-    position: [0, -1, 0],
-    config: config.wobbly,
-  }));
+  // Concrete material - slightly rough with warm tone
+  const concreteMaterial = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#f5f5f0'),
+      roughness: 0.85,
+      metalness: 0.02,
+      // Polygon offset to ensure proper layering
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1,
+    });
+  }, []);
 
   useFrame(() => {
     const offset = scroll.offset;
-    const isVisible = offset > 0.38;
-    const localProgress = Math.max(0, Math.min(1, (offset - 0.4) / 0.2));
+    // Phase 3: 0.286 - 0.429 (1/7)
+    const isVisible = offset > 0.26;
+    const localProgress = Math.max(0, Math.min(1, (offset - 0.286) / 0.143));
 
     if (groupRef.current) groupRef.current.visible = isVisible;
 
-    api.start((index) => {
+    // Animate each tier
+    tiers.forEach((tier, index) => {
       const threshold = index / tiers.length;
       const tierProgress = Math.max(0, Math.min(1, (localProgress - threshold) * tiers.length * 2));
-      
-      if (tierProgress > 0) {
-        return {
-          scale: [1, 1, 1],
-          position: tiers[index].position,
-          immediate: false,
-        };
-      } else {
-        return {
-          scale: [0, 0, 0],
-          position: [tiers[index].position[0], tiers[index].position[1] - 0.5, tiers[index].position[2]],
-          immediate: offset < 0.35, 
-        };
+
+      // Update meshes for this tier (3 wings per tier)
+      for (let wingIdx = 0; wingIdx < 3; wingIdx++) {
+        const meshIndex = index * 3 + wingIdx;
+        const mesh = meshRefs.current[meshIndex];
+        if (mesh) {
+          const targetScale = tierProgress > 0 ? 1 : 0.001;
+          mesh.scale.x = THREE.MathUtils.lerp(mesh.scale.x, targetScale, 0.08);
+          mesh.scale.y = THREE.MathUtils.lerp(mesh.scale.y, targetScale, 0.08);
+          mesh.scale.z = THREE.MathUtils.lerp(mesh.scale.z, targetScale, 0.08);
+        }
       }
     });
 
     if (labelRef.current) {
-      labelRef.current.style.opacity = (offset > 0.42 && offset < 0.58) ? "1" : "0";
+      // Phase 3 label: visible from 30% to 40%
+      labelRef.current.style.opacity = (offset > 0.30 && offset < 0.40) ? "1" : "0";
     }
   });
 
+  let meshIndex = 0;
+
   return (
     <group ref={groupRef} visible={false}>
-      {springs.map((props, i) => {
-        const tier = tiers[i];
-        return (
-          <group key={tier.id} rotation={[0, THREE.MathUtils.degToRad(tier.rotation), 0]}>
-            {[0, 120, 240].map((angle, wingIdx) => (
+      {tiers.map((tier, i) => (
+        <group key={tier.id} rotation={[0, THREE.MathUtils.degToRad(tier.rotation), 0]}>
+          {[0, 120, 240].map((angle, wingIdx) => {
+            const currentMeshIndex = meshIndex++;
+            return (
               <group key={wingIdx} rotation={[0, THREE.MathUtils.degToRad(angle), 0]}>
-                <AnimatedRoundedBox
-                  args={[tier.radius * 0.5, tier.height, tier.radius]}
+                {/* Main structural slab */}
+                <RoundedBox
+                  ref={(el) => { meshRefs.current[currentMeshIndex] = el as THREE.Mesh; }}
+                  args={[tier.radius * 0.48, tier.height - 0.04, tier.radius * 0.95]}
                   radius={0.05}
                   smoothness={4}
-                  position={props.position.to((x, y, z) => [x, y + tier.height / 2, z + tier.radius / 2.5])}
-                  scale={props.scale}
+                  position={[0, tier.position[1] + tier.height / 2, tier.radius / 2.5]}
                   castShadow
                   receiveShadow
+                  material={concreteMaterial}
+                />
+
+                {/* Floor slab lines - architectural detail */}
+                <mesh
+                  position={[0, tier.position[1] + tier.height - 0.01, tier.radius / 2.5]}
                 >
-                  <meshStandardMaterial color="#fefefe" roughness={0.4} />
-                </AnimatedRoundedBox>
+                  <boxGeometry args={[tier.radius * 0.46, 0.03, tier.radius * 0.92]} />
+                  <meshStandardMaterial
+                    color="#e8e8e5"
+                    roughness={0.9}
+                    metalness={0.0}
+                  />
+                </mesh>
               </group>
-            ))}
-          </group>
-        );
-      })}
+            );
+          })}
+        </group>
+      ))}
 
       <Html position={[0, 12, 0]} center>
-        <div 
+        <div
           ref={labelRef}
           className="pointer-events-none transition-opacity duration-500 bg-white/90 px-4 py-2 rounded-full shadow-lg border border-amber-100 flex items-center gap-3 whitespace-nowrap"
           style={{ opacity: 0 }}

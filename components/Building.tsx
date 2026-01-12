@@ -8,6 +8,7 @@ import Core from './Core';
 import Setbacks from './Setbacks';
 import Cladding from './Cladding';
 import Spire from './Spire';
+import Illumination from './Illumination';
 
 const Building: React.FC = () => {
   const scroll = useScroll();
@@ -27,19 +28,22 @@ const Building: React.FC = () => {
 
   return (
     <group ref={groupRef}>
-      {/* Stage 1: Foundation (0.0 - 0.2) */}
+      {/* Phase 1: Foundation (0 - 0.143) */}
       <Foundation />
 
-      {/* Stage 2: Central Core (0.2 - 0.4) */}
+      {/* Phase 2: Central Core (0.143 - 0.286) */}
       <Core />
 
-      {/* Stage 3: Structural Setbacks (0.4 - 0.6) */}
+      {/* Phase 3: Structural Setbacks (0.286 - 0.429) */}
       <Setbacks />
 
-      {/* Stage 4: Glass Cladding (0.6 - 0.8) */}
+      {/* Phase 4: Glass Cladding (0.429 - 0.571) */}
       <Cladding />
 
-      {/* Stage 5: The Spire (0.8 - 1.0) */}
+      {/* Phase 5: Crown/Illumination (0.571 - 0.857) - 2x length */}
+      <Illumination />
+
+      {/* Phase 6: The Spire (0.857 - 1.0) - Final touch */}
       <Spire />
     </group>
   );

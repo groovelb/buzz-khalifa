@@ -4,11 +4,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Vertical Breath</title>
+    <title>The Vertical Breath | Architectural Review</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Classic Editorial Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-      body { margin: 0; overflow: hidden; background-color: #f0f2f5; font-family: 'Inter', sans-serif; }
+      :root {
+        /* Static Base Colors */
+        --color-warm-white: #f5f3f0;
+
+        /* Dynamic Theme Variables (updated by JS) */
+        /* Day: no bg, black border/text | Night: dark bg, light text */
+        --ui-text-primary: #1a1a1a;
+        --ui-text-secondary: #3a3a3a;
+        --ui-text-muted: #5a5a5a;
+        --ui-text-body: #2a2a2a;
+        --ui-bg-card: transparent;
+        --ui-border: #1a1a1a;
+        --ui-border-accent: #1a1a1a;
+        --ui-gold: #1a1a1a;
+        --ui-gold-muted: rgba(26, 26, 26, 0.6);
+      }
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: var(--color-warm-white);
+        font-family: 'Source Sans 3', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
       #root { width: 100vw; height: 100vh; }
+
+      /* Font Families */
+      .font-editorial { font-family: 'Cormorant Garamond', 'Georgia', serif; }
+      .font-headline { font-family: 'Bebas Neue', 'Oswald', 'Impact', sans-serif; }
+      .font-condensed { font-family: 'Oswald', 'Bebas Neue', sans-serif; }
+      .font-body { font-family: 'Source Sans 3', 'Helvetica Neue', sans-serif; }
+
+      /* Dynamic Theme Text Colors */
+      .text-ink { color: var(--ui-text-primary); transition: color 0.7s ease; }
+      .text-charcoal { color: var(--ui-text-body); transition: color 0.7s ease; }
+      .text-slate { color: var(--ui-text-secondary); transition: color 0.7s ease; }
+      .text-stone { color: var(--ui-text-muted); transition: color 0.7s ease; }
+      .text-gold { color: var(--ui-gold); transition: color 0.7s ease; }
+
+      /* Dynamic Theme Backgrounds & Borders */
+      .bg-cream { background-color: var(--ui-bg-card); transition: background-color 0.7s ease; }
+      .bg-gold { background-color: var(--ui-gold); transition: background-color 0.7s ease; }
+      .border-gold { border-color: var(--ui-gold); transition: border-color 0.7s ease; }
+
+      /* Utilities */
+      .tracking-editorial { letter-spacing: 0.25em; }
     </style>
   <script type="importmap">
 {
