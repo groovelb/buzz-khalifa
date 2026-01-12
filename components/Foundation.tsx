@@ -3,6 +3,11 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useScroll, RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { BUILDING, COLORS } from './BurjKhalifaData';
+import { getDayNightState } from '../hooks/useDayNight';
+
+// 기초 크기 (건물 비율에 맞게 축소)
+const FOUNDATION_SIZE = BUILDING.BASE_WING_LENGTH * 1.8;  // ~3.6
 
 const Foundation: React.FC = () => {
   const scroll = useScroll();
@@ -11,20 +16,20 @@ const Foundation: React.FC = () => {
   const labelRef = useRef<HTMLDivElement>(null);
   const uplightRefs = useRef<THREE.PointLight[]>([]);
 
-  // Reinforced concrete mat material
+  // Reinforced concrete mat material - 세련된 콘크리트 질감
   const matMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#c9cdd1'),
-      roughness: 0.95,
-      metalness: 0.0,
+      color: new THREE.Color(COLORS.FOUNDATION),
+      roughness: 0.82,
+      metalness: 0.06,
     });
   }, []);
 
-  // Concrete pile material - slightly darker
+  // Concrete pile material - 깊이감 있는 어두운 콘크리트
   const pileMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#8b9298'),
-      roughness: 0.9,
+      color: new THREE.Color(COLORS.FOUNDATION_DARK),
+      roughness: 0.78,
       metalness: 0.05,
     });
   }, []);
@@ -34,8 +39,8 @@ const Foundation: React.FC = () => {
     // Phase 1: 0 - 0.143 (1/7)
     const progress = Math.min(1, offset / 0.143);
 
-    // Night progress for exterior lighting (starts at ~60% scroll)
-    const nightProgress = Math.max(0, Math.min(1, (offset - 0.6) / 0.3));
+    // 낮/밤 상태 계산
+    const dayNight = getDayNightState(offset);
 
     if (matRef.current) {
       const matScale = THREE.MathUtils.smoothstep(progress, 0, 0.5);
@@ -49,10 +54,21 @@ const Foundation: React.FC = () => {
       pilesRef.current.visible = pilesProgress > 0.01;
     }
 
-    // Exterior uplights turn on at night
-    uplightRefs.current.forEach((light) => {
+    // 외부 업라이트 - 밤에 건물 하부 조명
+    uplightRefs.current.forEach((light, index) => {
       if (light) {
-        light.intensity = nightProgress * 2;
+        // 밤 강도에 따라 켜짐
+        const baseIntensity = dayNight.nightIntensity * 2.5;
+        // 약간의 변화를 주어 자연스럽게
+        const variation = Math.sin(Date.now() * 0.001 + index * 0.5) * 0.1 + 1;
+        light.intensity = baseIntensity * variation;
+
+        // 밤에는 따뜻한 색상으로
+        if (dayNight.nightIntensity > 0.5) {
+          light.color.setHex(0xFFE8D0);  // 따뜻한 백색
+        } else {
+          light.color.setHex(0xFFF5E6);  // 기본 백색
+        }
       }
     });
 
@@ -62,20 +78,21 @@ const Foundation: React.FC = () => {
     }
   });
 
-  // Create a grid of piles - Y-shaped pattern to match Burj Khalifa
+  // Create a grid of piles - Y-shaped pattern to match Burj Khalifa (비율 수정)
   const pileGrid = useMemo(() => {
     const piles: JSX.Element[] = [];
-    const spacing = 0.28;
-    const count = 6;
+    const spacing = 0.22;
+    const count = 5;
+    const maxDist = FOUNDATION_SIZE / 2 - 0.2;
 
     for (let x = -count; x <= count; x++) {
       for (let z = -count; z <= count; z++) {
-        const dist = Math.sqrt(x * x + z * z);
-        if (dist < 6.5) {
+        const dist = Math.sqrt((x * spacing) ** 2 + (z * spacing) ** 2);
+        if (dist < maxDist) {
           piles.push(
             <Pile
               key={`${x}-${z}`}
-              position={[x * spacing, -1, z * spacing]}
+              position={[x * spacing, -0.8, z * spacing]}
               material={pileMaterial}
             />
           );
@@ -87,23 +104,23 @@ const Foundation: React.FC = () => {
 
   return (
     <group>
-      {/* Main Concrete Mat Foundation */}
+      {/* Main Concrete Mat Foundation - 비율 수정 */}
       <RoundedBox
         ref={matRef}
-        args={[4, 0.5, 4]}
-        radius={0.08}
+        args={[FOUNDATION_SIZE, 0.4, FOUNDATION_SIZE]}
+        radius={0.05}
         smoothness={4}
-        position={[0, 0.25, 0]}
+        position={[0, 0.2, 0]}
         castShadow
         receiveShadow
         material={matMaterial}
       />
 
       {/* Mat surface detail - construction joints */}
-      <mesh position={[0, 0.51, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[3.8, 3.8]} />
+      <mesh position={[0, 0.41, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[FOUNDATION_SIZE * 0.95, FOUNDATION_SIZE * 0.95]} />
         <meshStandardMaterial
-          color="#b8bcc0"
+          color={COLORS.CONCRETE_DARK}
           roughness={1}
           metalness={0}
           transparent
@@ -134,13 +151,13 @@ const Foundation: React.FC = () => {
           key={`uplight-${i}`}
           ref={(el) => { if (el) uplightRefs.current[i] = el; }}
           position={[
-            Math.cos(THREE.MathUtils.degToRad(angle)) * 2.5,
+            Math.cos(THREE.MathUtils.degToRad(angle)) * (FOUNDATION_SIZE / 2 + 0.3),
             0.1,
-            Math.sin(THREE.MathUtils.degToRad(angle)) * 2.5,
+            Math.sin(THREE.MathUtils.degToRad(angle)) * (FOUNDATION_SIZE / 2 + 0.3),
           ]}
           color="#fff5e6"
           intensity={0}
-          distance={8}
+          distance={6}
           decay={2}
         />
       ))}
@@ -156,8 +173,8 @@ interface PileProps {
 const Pile: React.FC<PileProps> = ({ position, material }) => {
   return (
     <RoundedBox
-      args={[0.12, 2, 0.12]}
-      radius={0.02}
+      args={[0.08, 1.5, 0.08]}
+      radius={0.015}
       smoothness={2}
       position={position}
       castShadow

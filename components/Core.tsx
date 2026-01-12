@@ -3,116 +3,136 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useScroll, RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { BUILDING, WING_ANGLES, COLORS, PHASES } from './BurjKhalifaData';
 
+/**
+ * Core Component - Phase 2: Central Core
+ * The massive hexagonal concrete core that forms the structural spine
+ * Y-shaped cross-section with 3 wings at 120° intervals
+ *
+ * Height: 7 units (increased from 3)
+ * This represents the foundation structure up to ~Tier 3 (120m in reality)
+ */
 const Core: React.FC = () => {
   const scroll = useScroll();
+  const groupRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
 
-  // High-strength concrete core material
+  // High-strength concrete core material - 세련된 쿨 그레이
   const coreMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#e8e8e5'),
-      roughness: 0.75,
-      metalness: 0.02,
+      color: new THREE.Color(COLORS.CONCRETE),
+      roughness: 0.68,
+      metalness: 0.10,
     });
   }, []);
 
-  // Elevator shaft interior - darker
-  const shaftMaterial = useMemo(() => {
+  // Darker material for recessed areas - 깊이감 있는 음영
+  const recessMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#404040'),
-      roughness: 0.9,
-      metalness: 0.1,
+      color: new THREE.Color(COLORS.CONCRETE_DARK),
+      roughness: 0.75,
+      metalness: 0.06,
+    });
+  }, []);
+
+  // 알루미늄 프레임 재질 (날개 끝) - 광택 강화
+  const aluminumMaterial = useMemo(() => {
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(COLORS.ALUMINUM),
+      roughness: 0.22,
+      metalness: 0.92,
     });
   }, []);
 
   useFrame(() => {
     const offset = scroll.offset;
+    const { start, end } = PHASES.CORE;
 
-    // Phase 2: 0.143 - 0.286 (1/7)
-    const isVisible = offset >= 0.12;
-    const localProgress = Math.max(0, Math.min(1, (offset - 0.143) / 0.143));
+    const isVisible = offset >= start - 0.02;
+    const localProgress = Math.max(0, Math.min(1, (offset - start) / (end - start)));
+
+    if (groupRef.current) {
+      groupRef.current.visible = isVisible;
+    }
+
+    if (!isVisible) return;
 
     if (coreRef.current) {
-      coreRef.current.visible = isVisible;
-      if (isVisible) {
-        coreRef.current.scale.y = Math.max(0.001, localProgress * 10);
-        coreRef.current.position.y = 0.5;
-      }
+      // Core rises dramatically - now 7 units tall
+      const targetHeight = localProgress * BUILDING.CORE_HEIGHT;
+      coreRef.current.scale.y = Math.max(0.001, targetHeight);
+      coreRef.current.position.y = 0.5;
     }
 
     if (labelRef.current) {
-      // Phase 2 label: visible from 15% to 26%
-      labelRef.current.style.opacity = (offset > 0.15 && offset < 0.26) ? "1" : "0";
+      labelRef.current.style.opacity = (offset > 0.15 && offset < 0.26) ? '1' : '0';
     }
   });
 
   return (
-    <group>
-      <group ref={coreRef} visible={false}>
-        {/* Y-Shaped Core: 3 wings - concrete shear walls */}
-        {[0, 120, 240].map((angle, i) => (
+    <group ref={groupRef} visible={false}>
+      <group ref={coreRef}>
+        {/* Central hexagonal hub - elevator core - 비율 수정 (더 가늘게) */}
+        <mesh position={[0, 0.5, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[BUILDING.CORE_RADIUS, BUILDING.CORE_RADIUS * 1.2, 1, 6]} />
+          <primitive object={coreMaterial} attach="material" />
+        </mesh>
+
+        {/* Y-Shaped wings extending from central core - 비율 수정 */}
+        {WING_ANGLES.map((angle, i) => (
           <group key={i} rotation={[0, THREE.MathUtils.degToRad(angle), 0]}>
-            {/* Main core wall */}
+            {/* Main wing structure - 새로운 비율 적용 */}
             <RoundedBox
-              args={[0.7, 1, 1.4]}
-              radius={0.04}
+              args={[BUILDING.BASE_WING_WIDTH, 1, BUILDING.BASE_WING_LENGTH * 0.8]}
+              radius={0.03}
               smoothness={4}
-              position={[0, 0.5, 0.55]}
+              position={[0, 0.5, BUILDING.BASE_WING_LENGTH * 0.4]}
               castShadow
               receiveShadow
               material={coreMaterial}
             />
 
-            {/* Vertical construction joint detail */}
-            <mesh position={[0, 0.5, 1.26]}>
-              <boxGeometry args={[0.6, 1, 0.02]} />
-              <meshStandardMaterial
-                color="#d5d5d0"
-                roughness={0.95}
-                metalness={0}
-              />
+            {/* Wing tip - lobular shape - 알루미늄 프레임 */}
+            <mesh position={[0, 0.5, BUILDING.BASE_WING_LENGTH * 0.85]} castShadow>
+              <cylinderGeometry args={[BUILDING.BASE_WING_WIDTH * 0.35, BUILDING.BASE_WING_WIDTH * 0.45, 1, 12]} />
+              <primitive object={aluminumMaterial} attach="material" />
+            </mesh>
+
+            {/* Vertical recess line (construction joint detail) */}
+            <mesh position={[0, 0.5, BUILDING.BASE_WING_LENGTH * 0.25]}>
+              <boxGeometry args={[0.07, 0.98, BUILDING.BASE_WING_LENGTH * 0.5]} />
+              <primitive object={recessMaterial} attach="material" />
             </mesh>
           </group>
         ))}
 
-        {/* Central Hub - elevator core */}
-        <RoundedBox
-          args={[0.9, 1, 0.9]}
-          radius={0.08}
-          smoothness={4}
-          position={[0, 0.5, 0]}
-          castShadow
-          receiveShadow
-          material={coreMaterial}
-        />
-
-        {/* Elevator shaft openings (3 sides) */}
-        {[0, 120, 240].map((angle, i) => (
-          <mesh
-            key={`shaft-${i}`}
-            position={[
-              Math.sin(THREE.MathUtils.degToRad(angle)) * 0.35,
-              0.5,
-              Math.cos(THREE.MathUtils.degToRad(angle)) * 0.35,
-            ]}
-            rotation={[0, THREE.MathUtils.degToRad(-angle), 0]}
-          >
-            <boxGeometry args={[0.25, 0.95, 0.1]} />
-            <meshStandardMaterial {...shaftMaterial} />
+        {/* Floor slab markers */}
+        {[0.15, 0.30, 0.45, 0.60, 0.75, 0.90].map((y, i) => (
+          <mesh key={i} position={[0, y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[BUILDING.CORE_RADIUS * 0.9, BUILDING.CORE_RADIUS * 1.3, 6]} />
+            <meshStandardMaterial
+              color={COLORS.CONCRETE_DARK}
+              roughness={0.9}
+              transparent
+              opacity={0.4}
+            />
           </mesh>
         ))}
       </group>
 
-      <Html position={[0, 5, 0]} center>
+      {/* Phase Label */}
+      <Html position={[0, 8, 0]} center>
         <div
           ref={labelRef}
           className="pointer-events-none transition-opacity duration-500 bg-white/90 px-4 py-2 rounded-full shadow-lg border border-blue-100 flex items-center gap-3 whitespace-nowrap"
           style={{ opacity: 0 }}
         >
           <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
-          <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Phase 02: Central Core</span>
+          <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+            Phase 02: Central Core
+          </span>
         </div>
       </Html>
     </group>

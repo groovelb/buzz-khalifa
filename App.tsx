@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ScrollControls, Scroll } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import Experience from './components/Experience';
 import Overlay from './components/Overlay';
 
@@ -83,6 +84,19 @@ const App: React.FC = () => {
               <Overlay />
             </Scroll>
           </ScrollControls>
+
+          {/*
+            Selective Bloom - 건물 실루엣 글로우
+            높은 threshold로 emissive 재질만 bloom 적용
+          */}
+          <EffectComposer>
+            <Bloom
+              intensity={1.2}
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.025}
+              mipmapBlur
+            />
+          </EffectComposer>
         </Suspense>
       </Canvas>
 

@@ -47,29 +47,93 @@ const sunFragmentShader = `
   }
 `;
 
-// 달 그라데이션 쉐이더
-const moonFragmentShader = `
-  varying vec2 vUv;
-  uniform vec3 colorCenter;
-  uniform vec3 colorEdge;
+// 달 텍스처 생성 함수 (Canvas 기반)
+const createMoonTexture = (): THREE.CanvasTexture => {
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
 
-  void main() {
-    vec2 center = vec2(0.5, 0.5);
-    float dist = distance(vUv, center) * 2.0;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size / 2 - 10;
 
-    // 달은 더 선명한 가장자리
-    float alpha = 1.0 - smoothstep(0.6, 1.0, dist);
+  // 배경 투명
+  ctx.clearRect(0, 0, size, size);
 
-    // 부드러운 색상 전환
-    vec3 color = mix(colorCenter, colorEdge, pow(dist, 0.8));
+  // 달 기본 - 노란색 그라데이션
+  const gradient = ctx.createRadialGradient(cx * 0.85, cy * 0.85, 0, cx, cy, radius);
+  gradient.addColorStop(0, '#FFFDE7');    // 밝은 중심
+  gradient.addColorStop(0.5, '#FFE082');  // 중간 노란색
+  gradient.addColorStop(0.85, '#FFD54F'); // 진한 노란색
+  gradient.addColorStop(1, '#FFC107');    // 가장자리
 
-    // 은은한 글로우
-    float glow = 1.0 - smoothstep(0.0, 1.0, dist);
-    alpha = max(alpha, glow * 0.3);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fillStyle = gradient;
+  ctx.fill();
 
-    gl_FragColor = vec4(color, alpha);
+  // 크레이터 (어두운 반점들)
+  const craters = [
+    { x: 0.3, y: 0.35, r: 0.12, opacity: 0.15 },
+    { x: 0.55, y: 0.25, r: 0.08, opacity: 0.12 },
+    { x: 0.7, y: 0.45, r: 0.15, opacity: 0.18 },
+    { x: 0.4, y: 0.6, r: 0.1, opacity: 0.14 },
+    { x: 0.25, y: 0.7, r: 0.07, opacity: 0.1 },
+    { x: 0.6, y: 0.7, r: 0.13, opacity: 0.16 },
+    { x: 0.75, y: 0.65, r: 0.06, opacity: 0.08 },
+    { x: 0.5, y: 0.45, r: 0.18, opacity: 0.12 },
+  ];
+
+  craters.forEach(crater => {
+    const craterX = cx + (crater.x - 0.5) * radius * 1.6;
+    const craterY = cy + (crater.y - 0.5) * radius * 1.6;
+    const craterR = crater.r * radius;
+
+    const craterGrad = ctx.createRadialGradient(
+      craterX, craterY, 0,
+      craterX, craterY, craterR
+    );
+    craterGrad.addColorStop(0, `rgba(139, 119, 42, ${crater.opacity})`);
+    craterGrad.addColorStop(0.7, `rgba(139, 119, 42, ${crater.opacity * 0.5})`);
+    craterGrad.addColorStop(1, 'rgba(139, 119, 42, 0)');
+
+    ctx.beginPath();
+    ctx.arc(craterX, craterY, craterR, 0, Math.PI * 2);
+    ctx.fillStyle = craterGrad;
+    ctx.fill();
+  });
+
+  // 미세한 표면 질감
+  for (let i = 0; i < 80; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * radius * 0.9;
+    const px = cx + Math.cos(angle) * dist;
+    const py = cy + Math.sin(angle) * dist;
+    const pr = 1 + Math.random() * 3;
+
+    ctx.beginPath();
+    ctx.arc(px, py, pr, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(180, 160, 80, ${0.05 + Math.random() * 0.08})`;
+    ctx.fill();
   }
-`;
+
+  // 가장자리 글로우 효과
+  const glowGradient = ctx.createRadialGradient(cx, cy, radius * 0.85, cx, cy, radius + 8);
+  glowGradient.addColorStop(0, 'rgba(255, 248, 200, 0)');
+  glowGradient.addColorStop(0.5, 'rgba(255, 245, 180, 0.3)');
+  glowGradient.addColorStop(1, 'rgba(255, 240, 150, 0)');
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius + 8, 0, Math.PI * 2);
+  ctx.fillStyle = glowGradient;
+  ctx.fill();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+};
 
 const DayNightCycle: React.FC = () => {
   const { scene, camera } = useThree();
@@ -77,7 +141,7 @@ const DayNightCycle: React.FC = () => {
 
   // Refs
   const sunGroupRef = useRef<THREE.Group>(null);
-  const moonGroupRef = useRef<THREE.Group>(null);
+  const moonRef = useRef<THREE.Sprite>(null);
   const sunLightRef = useRef<THREE.DirectionalLight>(null);
   const moonLightRef = useRef<THREE.DirectionalLight>(null);
   const ambientRef = useRef<THREE.AmbientLight>(null);
@@ -101,18 +165,14 @@ const DayNightCycle: React.FC = () => {
     });
   }, []);
 
-  // 달 쉐이더 머티리얼 - 노란색 달
+  // 달 Sprite 머티리얼 - Canvas 텍스처 사용 (완벽한 원형)
   const moonMaterial = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      vertexShader: sunVertexShader,
-      fragmentShader: moonFragmentShader,
-      uniforms: {
-        colorCenter: { value: new THREE.Color('#FFE566') },  // 밝은 노란색
-        colorEdge: { value: new THREE.Color('#FFD700') },    // 골드
-      },
+    const texture = createMoonTexture();
+    return new THREE.SpriteMaterial({
+      map: texture,
       transparent: true,
-      side: THREE.DoubleSide,
       depthWrite: false,
+      sizeAttenuation: false,  // 거리에 따른 크기 변화 없음 (항상 일정 크기)
     });
   }, []);
 
@@ -155,6 +215,9 @@ const DayNightCycle: React.FC = () => {
 
     scene.background = skyColor;
 
+    // Fog 비활성화 (경계선 이질감 제거)
+    scene.fog = null;
+
     // ============================================
     // SUN - 새 타이밍에 맞춰 이동
     // ============================================
@@ -191,24 +254,28 @@ const DayNightCycle: React.FC = () => {
     }
 
     // ============================================
-    // MOON - Phase 5 중반(65%)부터 나타남
+    // MOON - Phase 5 중반(65%)부터 화면 우측 상단에 나타남
+    // Sprite는 자동으로 카메라를 바라보므로 lookAt 불필요
     // ============================================
-    if (moonGroupRef.current) {
+    if (moonRef.current) {
       const moonStart = 0.65;
       const moonProgress = Math.max(0, (progress - moonStart) / (1 - moonStart));
 
-      const moonX = -4 + moonProgress * 3;   // -4 → -1
-      const moonY = 4 + moonProgress * 10;   // 4 → 14 (올라감)
-      const moonZ = -8;
+      // 우측 상단 위치 (X 양수, Y 높음)
+      const moonX = 8 + moonProgress * 2;    // 8 → 10 (우측)
+      const moonY = 12 + moonProgress * 8;   // 12 → 20 (상단으로 올라감)
+      const moonZ = -15;                      // 뒤쪽 배경
 
-      moonGroupRef.current.position.set(moonX, moonY, moonZ);
-      moonGroupRef.current.lookAt(camera.position);
+      moonRef.current.position.set(moonX, moonY, moonZ);
+      moonRef.current.visible = progress > moonStart;
 
-      moonGroupRef.current.visible = progress > moonStart;
+      // 페이드인 & 크기 (Sprite scale은 화면 비율)
+      const moonOpacity = Math.min(1, moonProgress * 2.0);
+      const moonSize = 0.08 + moonOpacity * 0.02;  // 화면 대비 크기
+      moonRef.current.scale.set(moonSize, moonSize, 1);
 
-      // 페이드인 & 크기
-      const moonOpacity = Math.min(1, moonProgress * 2.5);
-      moonGroupRef.current.scale.setScalar(1.5 + moonOpacity * 0.5);
+      // 투명도 조절
+      (moonRef.current.material as THREE.SpriteMaterial).opacity = moonOpacity;
     }
 
     // ============================================
@@ -298,9 +365,9 @@ const DayNightCycle: React.FC = () => {
 
       <directionalLight
         ref={moonLightRef}
-        position={[-10, 12, -5]}
+        position={[8, 15, -8]}
         intensity={0}
-        color="#B0C4DE"
+        color="#E8E8F0"
       />
 
       {/* ===== SUN ===== 그라데이션 쉐이더 적용 */}
@@ -310,12 +377,13 @@ const DayNightCycle: React.FC = () => {
         </mesh>
       </group>
 
-      {/* ===== MOON ===== 그라데이션 쉐이더 적용 */}
-      <group ref={moonGroupRef} position={[-4, 5, -8]} visible={false}>
-        <mesh material={moonMaterial}>
-          <planeGeometry args={[3, 3]} />
-        </mesh>
-      </group>
+      {/* ===== MOON ===== 노란색 보름달 Sprite (우측 상단, 완벽한 원형) */}
+      <sprite
+        ref={moonRef}
+        position={[8, 12, -15]}
+        material={moonMaterial}
+        visible={false}
+      />
     </>
   );
 };
