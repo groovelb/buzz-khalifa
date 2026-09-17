@@ -29,27 +29,6 @@ const ASSET_URLS = import.meta.glob(
   { eager: true, query: '?url', import: 'default' },
 );
 
-/**
- * 루트 reference/ 자료. src 밖이라 Vite 가 서빙하지 않으므로 목록 표로만 싣는다.
- * 이미지를 그리려면 public/reference/ 로 복사해야 하는데 그 복사는 하지 않는다.
- * refId 는 03 4.1절 레퍼런스 표의 ID다.
- */
-const REFERENCE_FILES = [
-  { path: 'reference/e5109a08a6045581269caec7f60b8fba.jpg', size: '185 KB', refId: 'REF-01', note: '티어별 높이 단면도' },
-  { path: 'reference/Erection-of-Spire-of-Burj-Khalifa.jpg', size: '191 KB', refId: 'REF-02', note: '첨탑 인양 시퀀스' },
-  { path: 'reference/images (1).jpeg', size: '6 KB', refId: 'REF-03', note: '층별 평면 변화' },
-  { path: 'reference/images (3).jpeg', size: '5 KB', refId: 'REF-04', note: 'Y자 평면 세트백 패턴' },
-  { path: 'reference/paper.md', size: '39 KB', refId: 'REF-05', note: '버트레스드 코어 구조 논문' },
-  { path: 'reference/images (2).jpeg', size: '7 KB', refId: '', note: '분류되지 않은 평면 자료' },
-  { path: 'reference/images.jpeg', size: '6 KB', refId: '', note: '분류되지 않은 평면 자료' },
-  { path: 'reference/01_2.jpg', size: '66 KB', refId: '', note: '외관 사진' },
-  { path: 'reference/3-Figure1-1.png', size: '91 KB', refId: '', note: '논문 도판' },
-  { path: 'reference/12-Figure18-1.png', size: '629 KB', refId: '', note: '논문 도판' },
-  { path: 'reference/Thetower.png', size: '152 KB', refId: '', note: '전체 실루엣' },
-  { path: 'reference/Screenshot 2026-01-13 at 1.42.01 AM.png', size: '5.7 MB', refId: '', note: '작업 중 화면 캡처' },
-  { path: 'reference/Screenshot 2026-01-13 at 1.42.09 AM.png', size: '5.8 MB', refId: '', note: '작업 중 화면 캡처' },
-];
-
 /** 바이트를 사람이 읽는 단위로 */
 const formatBytes = (bytes) => {
   if (!bytes && bytes !== 0) return '';
@@ -132,6 +111,8 @@ export const Default = {
   render: () => {
     const items = assetInventory.items.map(withUrl);
     const images = items.filter((item) => item.kind === 'image');
+    const stageImages = images.filter((item) => item.folder === 'stages');
+    const referenceImages = images.filter((item) => item.folder === 'reference');
     const others = items.filter((item) => item.kind !== 'image');
     const folders = Object.entries(assetInventory.summary);
     const missing = images.filter((item) => !item.src);
@@ -193,10 +174,10 @@ export const Default = {
 
           <SectionTitle
             title="Stage Photos"
-            description={ `${ images.length }장 전부 · constructionStages.ts 가 import 하고 ConstructionSection 이 구간 본문 아래에 렌더한다.` }
+            description={ `${ stageImages.length }장 전부 · constructionStages.ts 가 import 하고 ConstructionSection 이 구간 본문 아래에 렌더한다.` }
           />
           <Grid container spacing={ 3 } sx={ { mb: 6 } }>
-            { images.map((item) => {
+            { stageImages.map((item) => {
               const stage = stageOf(item);
               return (
                 <Grid key={ item.path } size={ { xs: 12, sm: 6, md: 4 } }>
@@ -287,47 +268,18 @@ export const Default = {
           ) }
 
           <Typography variant="h5" sx={ { fontWeight: 700, mt: 4, mb: 2, color: 'text.secondary' } }>
-            Reference Only (번들 제외)
+            Research Reference
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={ { mb: 3 } }>
-            저장소 루트 <code>reference/</code>에 있는 자료다. <code>src</code> 밖이라 Vite 가 서빙하지 않아
-            미리보기 없이 목록으로만 싣는다. 03 4.1절 레퍼런스 표의 ID와 짝이 맞는 것만 ID를 적었다.
+            리서치 자료 { referenceImages.length }장과 논문 한 편은 <code>src/assets/reference/</code>에 있다.
+            화면에 싣지 않고 모델 치수와 규칙의 근거로만 쓴다. 각 자료가 어떤 결정에 쓰였는지는
+            <a href="?path=/story/overview-buzz-khalifa-08-research--default" target="_top"> 08 Research </a>
+            에서 용도와 함께 본다.
           </Typography>
 
-          <SectionTitle
-            title="reference/"
-            description={ `${ REFERENCE_FILES.length }개 파일 · 티어 높이, 첨탑 인양, 평면 변화, 구조 논문` }
-          />
-          <TableContainer sx={ { mb: 4 } }>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={ { fontWeight: 600, width: 90 } }>ID</TableCell>
-                  <TableCell sx={ { fontWeight: 600 } }>경로</TableCell>
-                  <TableCell sx={ { fontWeight: 600, width: 90 } }>용량</TableCell>
-                  <TableCell sx={ { fontWeight: 600, width: '30%' } }>쓰임</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                { REFERENCE_FILES.map((row) => (
-                  <TableRow key={ row.path }>
-                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 12 } }>
-                      { row.refId || '-' }
-                    </TableCell>
-                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 12, color: 'text.secondary' } }>
-                      { row.path }
-                    </TableCell>
-                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 12 } }>{ row.size }</TableCell>
-                    <TableCell sx={ { fontSize: 13 } }>{ row.note }</TableCell>
-                  </TableRow>
-                )) }
-              </TableBody>
-            </Table>
-          </TableContainer>
-
           <Typography variant="body2" color="text.secondary">
-            리팩터링 전 루트에 있던 <code>stages/</code> 폴더는 <code>src/assets/stages/</code>로 옮겨졌고,
-            루트에는 더 이상 남아 있지 않다.
+            리팩터링 전 루트에 있던 <code>stages/</code>와 <code>reference/</code>는
+            <code> src/assets/</code> 아래로 옮겨졌고, 루트에는 더 이상 남아 있지 않다.
           </Typography>
         </PageContainer>
       </>

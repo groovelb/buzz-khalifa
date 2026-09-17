@@ -1,8 +1,9 @@
 
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useScroll, RoundedBox, Html } from '@react-three/drei';
+import { RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 import { BUILDING, WING_ANGLES, COLORS } from '@/data/burjKhalifaData';
 import { PHASES } from '@/data/scrollConfig';
 
@@ -15,7 +16,7 @@ import { PHASES } from '@/data/scrollConfig';
  * This represents the foundation structure up to ~Tier 3 (120m in reality)
  */
 export const Core: React.FC = () => {
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
   const groupRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -48,7 +49,7 @@ export const Core: React.FC = () => {
   }, []);
 
   useFrame(() => {
-    const offset = scroll.offset;
+    const offset = buildingProgress.current;
     const { start, end } = PHASES.CORE;
 
     const isVisible = offset >= start - 0.02;

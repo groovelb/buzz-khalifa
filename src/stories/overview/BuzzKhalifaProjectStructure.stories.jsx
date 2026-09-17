@@ -28,7 +28,14 @@ const DESCRIPTIONS = {
   burjKhalifaData: 'Data · 타워 치수, 티어 24켜, 3D 색 팔레트',
   scrollConfig: 'Data · 스크롤 페이지 수와 구간 경계, 연출 타이밍',
   projectStructure: 'Data · 프로젝트 구조 자동 생성 데이터',
+  assetInventory: 'Data · src/assets 파일 목록과 용량',
+
+  // Context
+  BuildingProgressContext: 'Context · 진행도 ref 를 공정 컴포넌트에 전달',
 };
+
+/** Context 모듈은 하위를 펼치지 않고 리프로 둔다. */
+const isContextName = (name) => /Context$/.test(name);
 
 /**
  * 트리 노드를 TreeNode 가 받을 수 있는 중첩 객체로 변환.
@@ -44,6 +51,10 @@ function nodeToTree(node) {
     // 다른 가지에서 이미 펼친 파일은 참조 리프로만 표시한다
     if (child.ref) {
       out[child.name + ' (참조)'] = '이미 펼친 가지';
+      continue;
+    }
+    if (isContextName(child.name)) {
+      out[child.name] = DESCRIPTIONS[child.name] || 'Context';
       continue;
     }
     let key = child.name;
@@ -91,8 +102,8 @@ export const Default = {
             클릭하여 펼치기/접기 | <code>src/App.tsx</code> · 재생성: <code>pnpm generate-structure</code>
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={ { mb: 3 } }>
-            컴포넌트는 중첩 구조로, 컴포넌트가 아닌 항목(Hook · Data)은 목적·역할 설명과 함께 리프로 표시한다.
-            3D 장면(ConstructionScene)과 스크롤 본문(ConstructionOverlay)이 같은 읽기 진행도를 나눠 쓴다.
+            컴포넌트는 중첩 구조로, 컴포넌트가 아닌 항목(Hook · Data · Context)은 목적·역할 설명과 함께 리프로 표시한다.
+            스크롤을 읽는 곳은 ConstructionScene 하나이고, BuildingModel 아래 여섯 공정은 진행도만 받는다.
           </Typography>
 
           <Box sx={ { p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 } }>

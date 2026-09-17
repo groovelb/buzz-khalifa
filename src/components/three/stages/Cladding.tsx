@@ -1,8 +1,9 @@
 
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useScroll, RoundedBox, Html } from '@react-three/drei';
+import { RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 import { BUILDING, WING_ANGLES, COLORS, getTiersByPhase, getTierAnimationDelay } from '@/data/burjKhalifaData';
 import { PHASES } from '@/data/scrollConfig';
 import { getDayNightState } from '@/hooks/useDayNight';
@@ -20,7 +21,7 @@ import { getDayNightState } from '@/hooks/useDayNight';
  * 애니메이션: 중간 속도 (모멘텀 형성)
  */
 export const Cladding: React.FC = () => {
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
   const groupRef = useRef<THREE.Group>(null);
   const tiersRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -104,7 +105,7 @@ export const Cladding: React.FC = () => {
 
 
   useFrame(() => {
-    const offset = scroll.offset;
+    const offset = buildingProgress.current;
     const { start, end } = PHASES.MID_TOWER;
 
     const isVisible = offset > start - 0.02;

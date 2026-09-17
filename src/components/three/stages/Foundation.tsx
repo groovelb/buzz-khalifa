@@ -1,8 +1,9 @@
 
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useScroll, RoundedBox, Html } from '@react-three/drei';
+import { RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 import { BUILDING, COLORS } from '@/data/burjKhalifaData';
 import { PHASES } from '@/data/scrollConfig';
 import { getDayNightState } from '@/hooks/useDayNight';
@@ -11,7 +12,7 @@ import { getDayNightState } from '@/hooks/useDayNight';
 const FOUNDATION_SIZE = BUILDING.BASE_WING_LENGTH * 1.8;  // ~3.6
 
 export const Foundation: React.FC = () => {
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
   const matRef = useRef<THREE.Mesh>(null);
   const pilesRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -36,7 +37,7 @@ export const Foundation: React.FC = () => {
   }, []);
 
   useFrame(() => {
-    const offset = scroll.offset;
+    const offset = buildingProgress.current;
     // Phase 1: 0 - 0.143 (1/7)
     const progress = Math.min(1, offset / PHASES.FOUNDATION.end);
 

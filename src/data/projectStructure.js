@@ -4,7 +4,7 @@
  * 수동 편집 금지. 재생성: pnpm generate-structure
  */
 export default {
-  "generatedAt": "2026-09-17T09:51:35.442Z",
+  "generatedAt": "2026-09-17T15:30:47.951Z",
   "root": {
     "name": "App",
     "kind": "component",
@@ -103,16 +103,16 @@ export default {
             "kind": "component",
             "category": "components/three",
             "file": "components/three/ConstructionScene.tsx",
-            "storyTitle": null,
-            "storyId": null,
+            "storyTitle": "Custom Component/Three/ConstructionScene",
+            "storyId": "custom-component-three-constructionscene",
             "children": [
               {
-                "name": "Building",
+                "name": "BuildingModel",
                 "kind": "component",
                 "category": "components/three",
-                "file": "components/three/Building.tsx",
-                "storyTitle": null,
-                "storyId": null,
+                "file": "components/three/BuildingModel.tsx",
+                "storyTitle": "Custom Component/Three/BuildingModel",
+                "storyId": "custom-component-three-buildingmodel",
                 "children": [
                   {
                     "name": "Cladding",
@@ -121,7 +121,19 @@ export default {
                     "file": "components/three/stages/Cladding.tsx",
                     "storyTitle": null,
                     "storyId": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "storyTitle": null,
+                        "storyId": null,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      }
+                    ],
                     "hooks": [
                       {
                         "name": "useDayNight",
@@ -147,7 +159,18 @@ export default {
                     "file": "components/three/stages/Core.tsx",
                     "storyTitle": null,
                     "storyId": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "ref": true,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      }
+                    ],
                     "hooks": [],
                     "data": [
                       {
@@ -167,7 +190,18 @@ export default {
                     "file": "components/three/stages/Foundation.tsx",
                     "storyTitle": null,
                     "storyId": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "ref": true,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      }
+                    ],
                     "hooks": [
                       {
                         "name": "useDayNight",
@@ -193,7 +227,18 @@ export default {
                     "file": "components/three/stages/Illumination.tsx",
                     "storyTitle": null,
                     "storyId": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "ref": true,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      }
+                    ],
                     "hooks": [
                       {
                         "name": "useDayNight",
@@ -219,7 +264,18 @@ export default {
                     "file": "components/three/stages/Setbacks.tsx",
                     "storyTitle": null,
                     "storyId": null,
-                    "children": [],
+                    "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "ref": true,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      }
+                    ],
                     "hooks": [
                       {
                         "name": "useDayNight",
@@ -246,6 +302,16 @@ export default {
                     "storyTitle": null,
                     "storyId": null,
                     "children": [
+                      {
+                        "name": "BuildingProgressContext",
+                        "kind": "component",
+                        "category": "components/three",
+                        "file": "components/three/BuildingProgressContext.tsx",
+                        "ref": true,
+                        "children": [],
+                        "hooks": [],
+                        "data": []
+                      },
                       {
                         "name": "Illumination",
                         "kind": "component",
@@ -274,19 +340,20 @@ export default {
                         "file": "data/scrollConfig.ts"
                       }
                     ]
+                  },
+                  {
+                    "name": "BuildingProgressContext",
+                    "kind": "component",
+                    "category": "components/three",
+                    "file": "components/three/BuildingProgressContext.tsx",
+                    "ref": true,
+                    "children": [],
+                    "hooks": [],
+                    "data": []
                   }
                 ],
                 "hooks": [],
-                "data": [
-                  {
-                    "name": "burjKhalifaData",
-                    "file": "data/burjKhalifaData.ts"
-                  },
-                  {
-                    "name": "scrollConfig",
-                    "file": "data/scrollConfig.ts"
-                  }
-                ]
+                "data": []
               },
               {
                 "name": "DayNightCycle",
@@ -318,6 +385,10 @@ export default {
               }
             ],
             "data": [
+              {
+                "name": "burjKhalifaData",
+                "file": "data/burjKhalifaData.ts"
+              },
               {
                 "name": "scrollConfig",
                 "file": "data/scrollConfig.ts"

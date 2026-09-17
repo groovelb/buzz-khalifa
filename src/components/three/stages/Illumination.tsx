@@ -1,8 +1,9 @@
 
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useScroll, RoundedBox, Html } from '@react-three/drei';
+import { RoundedBox, Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 import { BUILDING, WING_ANGLES, COLORS, getTiersByPhase, getTierAnimationDelay } from '@/data/burjKhalifaData';
 import { PHASES } from '@/data/scrollConfig';
 import { getDayNightState } from '@/hooks/useDayNight';
@@ -38,7 +39,7 @@ export const UPPER_TOWER_TOP_Y = (() => {
 })();
 
 export const Illumination: React.FC = () => {
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
   const groupRef = useRef<THREE.Group>(null);
   const tiersRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -128,7 +129,7 @@ export const Illumination: React.FC = () => {
 
 
   useFrame(() => {
-    const offset = scroll.offset;
+    const offset = buildingProgress.current;
     const { start, end } = PHASES.UPPER_TOWER;
     const duration = end - start;
 

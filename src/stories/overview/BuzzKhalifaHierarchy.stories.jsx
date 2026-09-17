@@ -13,6 +13,7 @@ import {
   TreeNode,
 } from '../../components/storybookDocumentation';
 import projectStructure from '../../data/projectStructure.js';
+import { ASSEMBLY_STEPS } from './assemblySteps.js';
 
 export default {
   title: 'Custom Component/0. Hierarchy',
@@ -21,74 +22,58 @@ export default {
   },
 };
 
-/**
- * 컴포넌트 이름 → 스토리 분류와 스토리 ID.
- * `src/data/projectStructure.js` 생성기가 `.stories.jsx` 형제 파일만 찾기 때문에
- * (이 저장소의 스토리는 `src/stories/`에 `.stories.tsx`로 모여 있다) 이 표로 보완한다.
- */
-const STORY_INDEX = {
-  App: { group: 'Page', title: 'Page/Buzz Khalifa', storyId: 'page-buzz-khalifa--default' },
-  ConstructionOverlay: {
-    group: 'Template',
-    title: 'Template/ConstructionOverlay',
-    storyId: 'template-constructionoverlay--default',
-  },
-  ConstructionSection: {
-    group: 'Section',
-    title: 'Section/ConstructionSection',
-    storyId: 'section-constructionsection--default',
-  },
-  ConstructionExperience: {
-    group: 'Custom Component',
-    title: 'Custom Component/Three/ConstructionExperience',
-    storyId: 'custom-component-three-constructionexperience--default',
-  },
-  TextReveal: {
-    group: 'Custom Component',
-    title: 'Custom Component/Kinetic Typography/TextReveal',
-    storyId: 'custom-component-kinetic-typography-textreveal--default',
-  },
-  ImageReveal: {
-    group: 'Custom Component',
-    title: 'Custom Component/Media/ImageReveal',
-    storyId: 'custom-component-media-imagereveal--default',
-  },
-};
-
-/** 스토리를 만들지 않기로 한 컴포넌트와 그 이유 */
+/** 스토리를 만들지 않기로 한 노드와 그 이유 */
 const NO_STORY_REASON = {
+  App: '페이지 스토리(Page/Buzz Khalifa)가 이 컴포넌트다',
   Header: '고정 머리말. 페이지 스토리에서 함께 보인다',
   Footer: '고정 꼬리말. 페이지 스토리에서 함께 보인다',
-  ConstructionScene: 'Canvas 안에서만 성립하는 3D 장면 루트',
-  Building: 'Canvas 안에서만 성립하는 구조 묶음',
+  ConstructionScene: '',
   DayNightCycle: 'Canvas 안에서만 성립하는 하늘과 조명',
-  Foundation: 'Canvas 안에서만 성립하는 공정 형상',
-  Core: 'Canvas 안에서만 성립하는 공정 형상',
-  Setbacks: 'Canvas 안에서만 성립하는 공정 형상',
-  Cladding: 'Canvas 안에서만 성립하는 공정 형상',
-  Illumination: 'Canvas 안에서만 성립하는 공정 형상',
-  Spire: 'Canvas 안에서만 성립하는 공정 형상',
+  Foundation: 'BuildingModel 안에서만 성립하는 공정 형상',
+  Core: 'BuildingModel 안에서만 성립하는 공정 형상',
+  Setbacks: 'BuildingModel 안에서만 성립하는 공정 형상',
+  Cladding: 'BuildingModel 안에서만 성립하는 공정 형상',
+  Illumination: 'BuildingModel 안에서만 성립하는 공정 형상',
+  Spire: 'BuildingModel 안에서만 성립하는 공정 형상',
+  BuildingProgressContext: 'Context · 진행도 ref 를 공정 컴포넌트에 전달',
 };
 
 /** 분류 표시 순서 */
 const GROUP_ORDER = ['Page', 'Template', 'Section', 'Custom Component', '스토리 없음'];
 
+/** Context 모듈은 하위를 펼치지 않고 리프로 둔다. */
+const isContextName = (name) => /Context$/.test(name);
+
+/** projectStructure 의 storyId 는 제목 슬러그다. 링크에는 스토리 이름까지 필요하다. */
+const toStoryPath = (storyId) => (storyId.includes('--') ? storyId : `${ storyId }--default`);
+
+/** title 첫 마디가 분류다. 스토리가 없으면 "스토리 없음". */
+const groupOf = (node) => (node.storyTitle ? node.storyTitle.split('/')[0] : '스토리 없음');
+
 /** 트리에서 컴포넌트 노드만 깊이 우선으로 모은다. 같은 이름은 한 번만 센다. */
 function collectComponents(node, depth = 0, seen = new Map()) {
   if (!seen.has(node.name)) {
-    seen.set(node.name, { name: node.name, file: node.file, depth });
+    seen.set(node.name, {
+      name: node.name,
+      file: node.file,
+      depth,
+      storyTitle: node.storyTitle,
+      storyId: node.storyId,
+    });
   }
-  for (const child of node.children || []) {
-    collectComponents(child, depth + 1, seen);
+  if (!isContextName(node.name)) {
+    for (const child of node.children || []) {
+      if (child.ref) continue;
+      collectComponents(child, depth + 1, seen);
+    }
   }
   return seen;
 }
 
 /** 노드 하나를 TreeNode 가 읽는 값으로. 리프는 분류 라벨 문자열이다. */
 function nodeToTree(node) {
-  const children = node.children || [];
-  const entry = STORY_INDEX[node.name];
-  const label = entry ? `${ entry.group } · ${ entry.title }` : NO_STORY_REASON[node.name] || '스토리 없음';
+  const label = node.storyTitle || NO_STORY_REASON[node.name] || '스토리 없음';
+  const children = isContextName(node.name) ? [] : node.children || [];
 
   if (children.length === 0) {
     return label;
@@ -97,6 +82,11 @@ function nodeToTree(node) {
   const out = { '(분류)': label };
   const nameCount = {};
   for (const child of children) {
+    // 다른 가지에서 이미 펼친 파일은 참조 리프로만 표시한다
+    if (child.ref) {
+      out[child.name + ' (참조)'] = '이미 펼친 가지';
+      continue;
+    }
     let key = child.name;
     if (nameCount[key] !== undefined) {
       nameCount[key] += 1;
@@ -109,19 +99,21 @@ function nodeToTree(node) {
   return out;
 }
 
-/** 스토리 링크 한 칸. Storybook 프레임 밖으로 이동시키려고 target 을 _top 으로 둔다. */
-function StoryLink({ entry }) {
-  if (!entry) {
-    return <span>스토리 없음</span>;
-  }
+/** 스토리 링크. Storybook 프레임 밖으로 이동시키려고 target 을 _top 으로 둔다. */
+function StoryLinks({ stories }) {
   return (
-    <a href={ `?path=/story/${ entry.storyId }` } target="_top">
-      { entry.title }
-    </a>
+    <>
+      { stories.map((story, index) => (
+        <span key={ story.id }>
+          { index > 0 ? ' · ' : '' }
+          <a href={ `?path=/story/${ story.id }` } target="_top">{ story.label }</a>
+        </span>
+      )) }
+    </>
   );
 }
 
-/** 분류 위계: 페이지에서 컴포넌트까지 한 화면에서 본다 */
+/** 분류 위계: 페이지에서 컴포넌트까지, 그리고 조립 순서 */
 export const Default = {
   render: () => {
     const root = projectStructure.root;
@@ -130,10 +122,7 @@ export const Default = {
 
     const groupCounts = GROUP_ORDER.map((group) => ({
       group,
-      items: components.filter((component) => {
-        const entry = STORY_INDEX[component.name];
-        return group === '스토리 없음' ? !entry : entry.group === group;
-      }),
+      items: components.filter((component) => groupOf(component) === group),
     }));
 
     return (
@@ -141,7 +130,7 @@ export const Default = {
         <DocumentTitle
           title="Hierarchy"
           status="Available"
-          note="Page · Template · Section · Custom Component 분류와 스토리 연결"
+          note="Page · Template · Section · Custom Component 분류와 조립 순서"
           brandName="Design System"
           systemName="Buzz Khalifa"
           version="1.0"
@@ -153,6 +142,43 @@ export const Default = {
           <Typography variant="body2" color="text.secondary" sx={ { mb: 4 } }>
             <code>src/data/projectStructure.js</code> · 재생성: <code>pnpm generate-structure</code>
           </Typography>
+
+          <SectionTitle
+            title="조립 순서"
+            description="리서치에서 페이지까지 여섯 단계. 08 Research 와 같은 목록을 쓴다."
+          />
+          <TableContainer sx={ { mb: 6 } }>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={ { fontWeight: 600, width: 60 } }>단계</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 120 } }>이름</TableCell>
+                  <TableCell sx={ { fontWeight: 600 } }>하는 일</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 220 } }>스토리</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { ASSEMBLY_STEPS.map((step) => (
+                  <TableRow key={ step.step }>
+                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 13 } }>{ step.step }</TableCell>
+                    <TableCell sx={ { fontSize: 13, fontWeight: 600 } }>{ step.title }</TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>
+                      { step.what }
+                      <Typography
+                        variant="caption"
+                        sx={ { display: 'block', fontFamily: 'monospace', fontSize: 11, color: 'text.secondary' } }
+                      >
+                        { step.where }
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>
+                      <StoryLinks stories={ step.stories } />
+                    </TableCell>
+                  </TableRow>
+                )) }
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <SectionTitle
             title="분류별 수"
@@ -183,7 +209,7 @@ export const Default = {
 
           <SectionTitle
             title="포함 관계 트리"
-            description="App 을 루트로 페이지 → 템플릿 → 섹션 → 컴포넌트 순서다. 각 노드의 (분류) 줄이 스토리 분류를 알려준다."
+            description="App 을 루트로 페이지 → 템플릿 → 섹션 → 컴포넌트, 그리고 장면 → 모델 → 공정 순서다. 각 노드의 (분류) 줄이 스토리 제목을 알려준다."
           />
           <Box sx={ { p: 2, mb: 4, border: '1px solid', borderColor: 'divider', borderRadius: 1 } }>
             <Box sx={ { fontFamily: 'monospace' } }>
@@ -199,33 +225,36 @@ export const Default = {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={ { fontWeight: 600, width: 200 } }>컴포넌트</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 220 } }>컴포넌트</TableCell>
                   <TableCell sx={ { fontWeight: 600, width: 130 } }>분류</TableCell>
                   <TableCell sx={ { fontWeight: 600 } }>스토리 또는 이유</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                { components.map((component) => {
-                  const entry = STORY_INDEX[component.name];
-                  return (
-                    <TableRow key={ component.name }>
-                      <TableCell sx={ { fontSize: 13, fontWeight: 600, pl: 1 + component.depth * 2 } }>
-                        { component.name }
-                      </TableCell>
-                      <TableCell sx={ { fontSize: 13 } }>{ entry ? entry.group : '스토리 없음' }</TableCell>
-                      <TableCell sx={ { fontSize: 13, color: entry ? 'text.primary' : 'text.secondary' } }>
-                        { entry ? <StoryLink entry={ entry } /> : NO_STORY_REASON[component.name] || '' }
-                      </TableCell>
-                    </TableRow>
-                  );
-                }) }
+                { components.map((component) => (
+                  <TableRow key={ component.name }>
+                    <TableCell sx={ { fontSize: 13, fontWeight: 600, pl: 1 + component.depth * 2 } }>
+                      { component.name }
+                    </TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>{ groupOf(component) }</TableCell>
+                    <TableCell sx={ { fontSize: 13, color: component.storyId ? 'text.primary' : 'text.secondary' } }>
+                      { component.storyId ? (
+                        <StoryLinks
+                          stories={ [{ label: component.storyTitle, id: toStoryPath(component.storyId) }] }
+                        />
+                      ) : (
+                        NO_STORY_REASON[component.name] || ''
+                      ) }
+                    </TableCell>
+                  </TableRow>
+                )) }
               </TableBody>
             </Table>
           </TableContainer>
 
           <Typography variant="body2" color="text.secondary">
             트리에 없는 파일: <code>components/three/CinematicCamera.tsx</code>는 어디에서도 import 되지 않아 구조에 나타나지 않는다.
-            문서 스토리(Overview 01~07)는 컴포넌트가 아니므로 이 표에서 세지 않는다.
+            문서 스토리(Overview 01~08)는 컴포넌트가 아니므로 이 표에서 세지 않는다.
           </Typography>
         </PageContainer>
       </>

@@ -86,9 +86,9 @@ src/
 | Storybook Docs | 원본 `.md`를 `?raw` import |
 | 문서 렌더링 | `EditorialDocument` 사용, 본문 복제 금지 |
 | 스타일 | Tailwind는 로컬 빌드, 런타임 CDN 금지 |
-| 확인 명령 | `pnpm typecheck`, `pnpm build`, `pnpm build-storybook`, `pnpm test` |
+| 확인 명령 | 타입 검사, 앱 빌드, 스토리북 빌드, 테스트 (비고 참조) |
 
-비고: 타입 검사와 회귀 테스트 7개를 통과했다. 기준 커밋 `75471c5`의 형상·공정 본문·낮과 밤 계산을 비교했고 사진 6장은 바이트 단위로 보존했다. 앱과 Storybook은 정적 빌드로 검증하며 브라우저 시각 검증은 수행하지 않았다.
+비고: 확인 명령은 `pnpm typecheck`, `pnpm build`, `pnpm build-storybook`, `pnpm test`다. 타입 검사와 회귀 테스트 7개를 통과했다. 기준 커밋 `75471c5`의 형상·공정 본문·낮과 밤 계산을 비교했고 사진 6장은 바이트 단위로 보존했다. 앱과 Storybook은 정적 빌드로 검증하며 브라우저 시각 검증은 수행하지 않았다.
 
 - 정적 빌드는 Three.js와 문서 도구의 500 kB 초과 청크 경고를 남긴다.
 - Google Fonts와 기존 city 환경맵은 외부 네트워크를 사용한다. Tailwind CSS는 로컬 빌드다.

@@ -4,8 +4,18 @@
  * 수동 편집 금지. 재생성: pnpm generate-assets
  */
 export default {
-  "generatedAt": "2026-09-17T09:44:05.524Z",
+  "generatedAt": "2026-09-17T15:28:47.847Z",
   "summary": {
+    "src/assets/reference": {
+      "files": 13,
+      "bytes": 13450060,
+      "image": 12,
+      "video": 0,
+      "audio": 0,
+      "font": 0,
+      "model": 0,
+      "other": 1
+    },
     "src/assets/stages": {
       "files": 6,
       "bytes": 13873926,
@@ -18,6 +28,149 @@ export default {
     }
   },
   "items": [
+    {
+      "path": "src/assets/reference/01_2.jpg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "01_2.jpg",
+      "ext": ".jpg",
+      "kind": "image",
+      "bytes": 68041,
+      "url": null,
+      "importKey": "../../assets/reference/01_2.jpg"
+    },
+    {
+      "path": "src/assets/reference/12-Figure18-1.png",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "12-Figure18-1.png",
+      "ext": ".png",
+      "kind": "image",
+      "bytes": 644343,
+      "url": null,
+      "importKey": "../../assets/reference/12-Figure18-1.png"
+    },
+    {
+      "path": "src/assets/reference/3-Figure1-1.png",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "3-Figure1-1.png",
+      "ext": ".png",
+      "kind": "image",
+      "bytes": 93399,
+      "url": null,
+      "importKey": "../../assets/reference/3-Figure1-1.png"
+    },
+    {
+      "path": "src/assets/reference/e5109a08a6045581269caec7f60b8fba.jpg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "e5109a08a6045581269caec7f60b8fba.jpg",
+      "ext": ".jpg",
+      "kind": "image",
+      "bytes": 189311,
+      "url": null,
+      "importKey": "../../assets/reference/e5109a08a6045581269caec7f60b8fba.jpg"
+    },
+    {
+      "path": "src/assets/reference/Erection-of-Spire-of-Burj-Khalifa.jpg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "Erection-of-Spire-of-Burj-Khalifa.jpg",
+      "ext": ".jpg",
+      "kind": "image",
+      "bytes": 195276,
+      "url": null,
+      "importKey": "../../assets/reference/Erection-of-Spire-of-Burj-Khalifa.jpg"
+    },
+    {
+      "path": "src/assets/reference/images (1).jpeg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "images (1).jpeg",
+      "ext": ".jpeg",
+      "kind": "image",
+      "bytes": 6561,
+      "url": null,
+      "importKey": "../../assets/reference/images (1).jpeg"
+    },
+    {
+      "path": "src/assets/reference/images (2).jpeg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "images (2).jpeg",
+      "ext": ".jpeg",
+      "kind": "image",
+      "bytes": 7094,
+      "url": null,
+      "importKey": "../../assets/reference/images (2).jpeg"
+    },
+    {
+      "path": "src/assets/reference/images (3).jpeg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "images (3).jpeg",
+      "ext": ".jpeg",
+      "kind": "image",
+      "bytes": 4857,
+      "url": null,
+      "importKey": "../../assets/reference/images (3).jpeg"
+    },
+    {
+      "path": "src/assets/reference/images.jpeg",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "images.jpeg",
+      "ext": ".jpeg",
+      "kind": "image",
+      "bytes": 6097,
+      "url": null,
+      "importKey": "../../assets/reference/images.jpeg"
+    },
+    {
+      "path": "src/assets/reference/paper.md",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "paper.md",
+      "ext": ".md",
+      "kind": "other",
+      "bytes": 40023,
+      "url": null,
+      "importKey": "../../assets/reference/paper.md"
+    },
+    {
+      "path": "src/assets/reference/Screenshot 2026-01-13 at 1.42.01 AM.png",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "Screenshot 2026-01-13 at 1.42.01 AM.png",
+      "ext": ".png",
+      "kind": "image",
+      "bytes": 5965339,
+      "url": null,
+      "importKey": "../../assets/reference/Screenshot 2026-01-13 at 1.42.01 AM.png"
+    },
+    {
+      "path": "src/assets/reference/Screenshot 2026-01-13 at 1.42.09 AM.png",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "Screenshot 2026-01-13 at 1.42.09 AM.png",
+      "ext": ".png",
+      "kind": "image",
+      "bytes": 6073864,
+      "url": null,
+      "importKey": "../../assets/reference/Screenshot 2026-01-13 at 1.42.09 AM.png"
+    },
+    {
+      "path": "src/assets/reference/Thetower.png",
+      "root": "src/assets",
+      "folder": "reference",
+      "name": "Thetower.png",
+      "ext": ".png",
+      "kind": "image",
+      "bytes": 155855,
+      "url": null,
+      "importKey": "../../assets/reference/Thetower.png"
+    },
     {
       "path": "src/assets/stages/1.jpeg",
       "root": "src/assets",

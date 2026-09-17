@@ -1,8 +1,9 @@
 
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useScroll, Html } from '@react-three/drei';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 import { BUILDING, COLORS } from '@/data/burjKhalifaData';
 import { PHASES } from '@/data/scrollConfig';
 import { UPPER_TOWER_TOP_Y } from './Illumination';
@@ -23,7 +24,7 @@ const SPIRE_BASE_Y = UPPER_TOWER_TOP_Y;
 const SPIRE_HEIGHT = BUILDING.SPIRE_HEIGHT; // 8 units (reduced from 13)
 
 export const Spire: React.FC = () => {
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
   const groupRef = useRef<THREE.Group>(null);
   const spireRef = useRef<THREE.Group>(null);
   const labelRef = useRef<HTMLDivElement>(null);
@@ -88,7 +89,7 @@ export const Spire: React.FC = () => {
   const ringPositions = useMemo(() => [1.5, 2.8, 3.9, 4.8, 5.6, 6.3], []);
 
   useFrame((state) => {
-    const offset = scroll.offset;
+    const offset = buildingProgress.current;
     const { start, end } = PHASES.SPIRE;
 
     const isVisible = offset > start - 0.02;

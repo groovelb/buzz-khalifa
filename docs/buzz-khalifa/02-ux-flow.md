@@ -158,7 +158,8 @@ App
 | App | 얇은 조립 지점 | 수정 | `src/App.tsx` |
 | Header, Footer | 간행 정보와 크레딧 | 신규 | `components/layout` |
 | ConstructionExperience | Canvas 경계 | 신규 | `components/three` |
-| ConstructionScene, Building | 장면과 타워 | 수정 | `components/three` |
+| ConstructionScene | 스크롤 반응 장면 | 수정 | `components/three` |
+| BuildingModel | 진행도로 서는 순수 모델 | 신규 | `components/three` |
 | 6 stage modules | 공정별 형상 | 수정 | `components/three/stages` |
 | DayNightCycle | 하늘과 조명 | 수정 | `components/three/environment` |
 | ConstructionOverlay | 스크롤 본문 | 수정 | `components/scroll` |
@@ -167,7 +168,7 @@ App
 | ImageReveal | 사진 등장 | 수정 | `media` |
 | 3 data modules | 콘텐츠, 기하, 진행 | 수정 | `src/data` |
 
-비고: 표의 경로는 스타터 기반 리팩터링의 목표 구조이며 잠정이다. Storybook 문서용 래퍼는 원본 Markdown을 raw import하며 본문을 복제하지 않는다.
+비고: 스크롤을 읽는 곳은 ConstructionScene 하나다. BuildingModel 은 진행도만 받아 형상을 그린다(옛 Building 모듈을 둘로 나눴다). Storybook 문서용 래퍼는 원본 Markdown을 raw import하며 본문을 복제하지 않는다.
 
 ---
 

@@ -140,7 +140,7 @@
 | REF-05 | 제공 구조 논문 | 버트레스드 코어 | 예 |
 | REF-06 | 제공 공정 사진 6장 | 본문별 현장 기록 | 예 |
 
-비고: REF-06은 리팩터링 후 `src/assets/stages/1.jpeg`부터 `6.jpeg`를 쓴다. 나머지는 저장소 루트 `reference/`에 그대로 있다. REF-01 `e5109a08a6045581269caec7f60b8fba.jpg`, REF-02 `Erection-of-Spire-of-Burj-Khalifa.jpg`, REF-03 `images (1).jpeg`, REF-04 `images (3).jpeg`, REF-05 `paper.md`. 모두 저장소에 있는 제공 자료이고 새로 만든 경로가 없다. 파일 목록과 용량은 스토리북 07 Assets에 있다.
+비고: REF-06은 리팩터링 후 `src/assets/stages/1.jpeg`부터 `6.jpeg`를 쓴다. 나머지는 `src/assets/reference/`로 옮겨졌다. REF-01 `e5109a08a6045581269caec7f60b8fba.jpg`, REF-02 `Erection-of-Spire-of-Burj-Khalifa.jpg`, REF-03 `images (1).jpeg`, REF-04 `images (3).jpeg`, REF-05 `paper.md`. 모두 저장소에 있는 제공 자료이고 새로 만든 경로가 없다. 파일 목록과 용량은 스토리북 07 Assets에, 자료별 용도와 논문 전문은 08 Research에 있다.
 
 ---
 
