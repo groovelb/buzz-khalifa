@@ -1,83 +1,32 @@
-# 디자인 시스템 (Bruno Simon Style)
+# 디자인 시스템
 
-## 컬러 팔레트
+## 시각 방향
 
-### 필수 색상 코드
-```typescript
-export const COLORS = {
-  // 지면 & 배경
-  ground: '#e5e5e5',        // 연한 샌드/그레이
-  background: '#f5f5f5',    // 밝은 배경
+The Vertical Breath는 청회색 건축 모델과 차분한 잡지 지면을 결합한다. 정사영 카메라, 넓은 여백, 가는 선, 대문자 제목, 낮에서 밤으로의 색 전환이 핵심이다. 파스텔 장난감 미학과 둥근 카드 묶음은 이 프로젝트의 방향이 아니다.
 
-  // 구조물
-  structure: '#ffffff',     // 웜 화이트 (콘크리트/코어)
-  structureAlt: '#f0f0f0',  // 약간 어두운 구조물
+## 색과 표면
 
-  // 유리 & 외벽
-  glass: '#a2d2ff',         // 파스텔 블루
-  glassDark: '#8ec8ff',     // 진한 유리
+| 역할 | 기준 |
+|---|---|
+| 지면 | Warm White `#f5f3f0` |
+| 제목 | Ink `#1a1a1a` |
+| 콘크리트 | Blue Grey `#c8cdd2` |
+| 유리 | Deep Blue Grey `#506872` |
+| 금속 | Silver `#d0d5da`, Steel `#d4d8dc` |
+| 야간 강조 | Gold `#d4b878` |
 
-  // 악센트
-  accent: '#ffc8a2',        // 웜 파스텔 오렌지
-  highlight: '#c2f0c2',     // 파스텔 그린
-} as const;
-```
+값의 정의는 `src/styles/global.css`와 `src/data/burjKhalifaData.ts`에 둔다. 같은 값을 컴포넌트에 새로 만들지 않는다.
 
-## Geometry 규칙
+## 타이포와 레이아웃
 
-### RoundedBox 필수
-- 모든 박스형 오브젝트: `RoundedBox` 사용
-- 최소 radius: `0.05` (작은 오브젝트) ~ `0.2` (큰 오브젝트)
-- segments: `4` 이상 권장
+- 제목은 Bebas Neue 계열, 부제는 Oswald 계열, 인용은 Cormorant Garamond 계열, 본문은 Source Sans 3 계열을 사용한다.
+- 제목은 대문자와 넓은 자간, 본문은 읽기용 행간을 유지한다.
+- 본문은 좁은 한 단에 두고 반대편을 3D 장면의 여백으로 남긴다.
+- 카드 배경, 과도한 그림자, 무관한 색 강조를 추가하지 않는다.
 
-```tsx
-// 표준 RoundedBox 사용법
-<RoundedBox args={[width, height, depth]} radius={0.1} smoothness={4}>
-  <meshStandardMaterial color={COLORS.structure} />
-</RoundedBox>
-```
+## 3D 형태와 조명
 
-### 원통/파이프 처리
-- `CylinderGeometry`에 `radiusSegments: 32` 이상
-- 날카로운 모서리 대신 부드러운 느낌 유지
-
-## 라이팅 설정
-
-### 필수 조명 구성
-```tsx
-// Environment + ContactShadows 조합
-<Environment preset="city" />
-<ContactShadows
-  position={[0, -0.01, 0]}
-  opacity={0.4}
-  scale={20}
-  blur={2}
-  far={4}
-/>
-```
-
-### 조명 금지 사항
-- 날카로운 DirectionalLight 단독 사용 금지
-- 과도한 명암 대비 피하기
-- 부드럽고 균일한 조명 유지
-
-## 시각적 원칙
-
-### DO (권장)
-- 미니멀한 형태, 불필요한 디테일 제거
-- 부드러운 그림자로 깊이감 표현
-- 일관된 파스텔 톤 유지
-- '장난감 같은' 친근한 느낌
-
-### DON'T (금지)
-- 포토리얼리스틱 텍스처
-- 날카로운 모서리/하드 엣지
-- 과도한 반사/광택
-- 복잡한 디테일 추가
-- 어두운/채도 높은 색상
-
-## 스케일 기준
-- 빌딩 전체 높이: 약 `20` 유닛
-- 기초(Foundation): 높이 `2` 유닛
-- 각 층(Floor): 높이 `0.3~0.5` 유닛
-- 첨탑(Spire): 높이 `3` 유닛
+- Y자 평면, 세트백, 첨탑의 비율을 지킨다. 단순화는 성능과 단계별 가독성을 위한 경우에만 한다.
+- 모서리는 구조 표현에 필요할 때만 약하게 완화한다. 모든 오브젝트에 RoundedBox를 강제하지 않는다.
+- 콘크리트는 무광, 금속은 반사, 유리는 반투명의 역할을 구분한다.
+- 환경과 발광은 낮에서 밤으로의 진행에 맞춘다. 단일 강한 방향광만으로 전체를 설명하지 않는다.

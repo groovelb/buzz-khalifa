@@ -4,130 +4,34 @@ paths:
   - "src/**/*.tsx"
 ---
 
-# TypeScript & React 코드 스타일
+# TypeScript와 React 코드 스타일
 
-## TypeScript 규칙
+## 타입과 import
 
-### 타입 정의
-- 모든 props는 명시적 타입 정의 필수
-- `any` 사용 금지, 불가피할 경우 `unknown` 사용
-- 상수 객체는 `as const` assertion 활용
+- props와 공개 함수의 입출력 타입을 명시한다.
+- `any`를 쓰지 않고 불확실한 값은 `unknown`으로 좁힌다.
+- 데이터 상수는 `as const`와 `satisfies`를 우선한다.
+- `@/`는 `src/`를 가리킨다. 타입 import는 `import type`로 분리한다.
+- import 순서는 외부 패키지, `@/` 모듈, 상대 모듈, 타입 순서다.
 
-```typescript
-// 컴포넌트 Props 정의
-interface BuildingStageProps {
-  progress: number;
-  stageIndex: number;
-  children?: React.ReactNode;
-}
-
-// 상수 정의
-export const COLORS = {
-  ground: '#e5e5e5',
-  structure: '#ffffff',
-} as const;
-
-type ColorKey = keyof typeof COLORS;
+```ts
+import { useMemo } from 'react';
+import { PHASES } from '@/data/scrollConfig';
+import type { StageRange } from '@/types';
 ```
 
-### Import 순서
-```typescript
-// 1. React/라이브러리
-import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+## 모듈 경계
 
-// 2. 프로젝트 컴포넌트
-import { Building } from '@/components/three/Building';
-
-// 3. 훅/유틸리티
-import { useStageProgress } from '@/hooks/useStageProgress';
-
-// 4. 상수/타입
-import { COLORS, STAGES } from '@/constants';
-import type { StageConfig } from '@/types';
-```
-
-### 경로 별칭
-- `@/` = `src/` 디렉토리
-- 상대 경로 `../../../` 대신 절대 경로 사용
+- `App.tsx`는 layout과 experience를 조립한다. overlay는 experience의 Scroll HTML 안에 둔다.
+- Canvas 코드는 `components/three/`, DOM 본문은 `components/scroll/`에 둔다.
+- 새 공정 형상은 `components/three/stages/`, 환경 요소는 `three/environment/`에 둔다.
+- 콘텐츠는 `constructionStages`, 기하는 `burjKhalifaData`, 시간과 구간은 `scrollConfig`에 둔다.
+- 재사용 공개 모듈만 각 디렉터리의 `index.ts`에서 export한다.
 
 ## React 패턴
 
-### 함수형 컴포넌트
-```typescript
-// 화살표 함수 + 명시적 반환 타입
-export const BuildingCore: React.FC<BuildingCoreProps> = ({ height, progress }) => {
-  // ...
-  return (
-    <group>
-      {/* ... */}
-    </group>
-  );
-};
-```
-
-### 커스텀 훅
-- `use` 접두사 필수
-- 단일 책임 원칙 준수
-- 재사용 가능한 로직 추출
-
-```typescript
-// hooks/useStageProgress.ts
-export const useStageProgress = (
-  globalProgress: number,
-  stage: StageConfig
-): number => {
-  return useMemo(() => {
-    if (globalProgress < stage.start) return 0;
-    if (globalProgress > stage.end) return 1;
-    return (globalProgress - stage.start) / (stage.end - stage.start);
-  }, [globalProgress, stage]);
-};
-```
-
-### 상태 관리
-- 로컬 상태: `useState`, `useReducer`
-- 3D 씬 상태: `useRef` + `useFrame` 직접 조작
-- 전역 상태: 최소화 (필요시 Context API)
-
-## 파일 명명 규칙
-
-### 컴포넌트
-- PascalCase: `BuildingCore.tsx`, `FoundationStage.tsx`
-- 한 파일에 한 컴포넌트 원칙
-
-### 훅
-- camelCase + use 접두사: `useStageProgress.ts`
-
-### 상수/유틸
-- camelCase: `colors.ts`, `stageHelpers.ts`
-
-### 타입
-- 별도 파일: `types/index.ts` 또는 `types/stages.ts`
-
-## 폴더 구조
-```
-src/
-├── components/
-│   ├── three/           # R3F 3D 컴포넌트
-│   │   ├── Building.tsx
-│   │   ├── stages/      # 각 스테이지별 컴포넌트
-│   │   │   ├── Foundation.tsx
-│   │   │   ├── Core.tsx
-│   │   │   ├── Setbacks.tsx
-│   │   │   ├── Cladding.tsx
-│   │   │   └── Spire.tsx
-│   │   └── environment/ # 환경 (조명, 그림자)
-│   └── ui/              # DOM UI 컴포넌트
-├── hooks/
-├── constants/
-├── types/
-└── utils/
-```
-
-## 금지 패턴
-- 클래스 컴포넌트 사용
-- `export default` (named export 선호)
-- 인라인 스타일 (Tailwind 또는 styled 사용)
-- 중첩 삼항 연산자
-- 매직 넘버 (상수로 추출)
+- 함수 컴포넌트와 named export를 사용한다.
+- 복잡한 파생값은 render 전에 계산하거나 `useMemo`로 안정화한다.
+- 3D frame loop에서 ref를 조작하고 React 상태 갱신을 피한다.
+- Tailwind class와 전역 CSS를 DOM에 사용한다. R3F의 재질·변환 props는 Canvas 표현에 필요한 예외다.
+- 중첩 삼항, 의미 없는 매직 넘버, 사용하지 않는 export를 남기지 않는다.

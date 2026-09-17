@@ -1,34 +1,29 @@
 # Buzz Khalifa: UX Flow
 
 > 이 문서가 결정하는 것: 각 과업을 어떤 화면과 데이터로 이루는가
-> 입력: 01 4절 사용자·대상, 01 5절 과업 · 출력 대상: 03-visual-direction, /supabase-integration, /component-work (넘기는 항목은 이 문서 6절 표)
+> 입력: 01 4절 사용자·대상, 01 5절 과업 · 출력 대상: 03-visual-direction, 구현 컴포넌트
 
 ## 결정 현황
 
-이 표의 확정 항목만 다음 문서가 그대로 인용한다. 잠정은 `(잠정)` 표시를 달고 인용하고, 미정은 인용하지 않는다.
-
 | 섹션 | 상태 | 비고 |
 |---|---|---|
-| 1. UX-flow 시나리오 | 확정 | 구간 경계는 코드값 |
-| 2.1 페이지 리스트 | 확정 | 단일 페이지, 구간 단위 |
-| 2.2 계층 트리 | 확정 | |
-| 3.1 대상 정의 | 확정 | 01 4.2절 5행 그대로 |
+| 1. UX-flow 시나리오 | 확정 | 기존 승인 유지 |
+| 2.1 페이지 리스트 | 확정 | 단일 화면 유지 |
+| 2.2 계층 트리 | 잠정 | 새 파일 경로 반영 |
+| 3.1 대상 정의 | 확정 | 이름 계약 유지 |
 | 3.2 이름 사전 | 확정 | 서버 데이터 없음 |
-| 4. 인터랙션 원칙 | 잠정 | 코드에서 역추출 (Q4) |
-| 5. 컴포넌트 리스트 | 확정 | 파일 14개 대조 |
-| 6. 다음 문서로 넘기는 것 | 확정 | 스타터킷 대조 불가 |
+| 4. 인터랙션 원칙 | 잠정 | 코드 동작에서 추론 |
+| 5. 컴포넌트 리스트 | 잠정 | 스타터 이관 중 |
+| 6. 다음 문서로 넘기는 것 | 잠정 | Storybook 문서 추가 |
 
 문서 상태: 잠정 승인 (하드 게이트 충족)
-개정: 2026-09-17 v2 · 변경: 3.1절 높이 비고에 실제 형상 값 병기
+개정: 2026-09-17 v3 · 변경: `src/` 기반 모듈 경계와 데이터 이관을 반영
 
 비고:
 
-- **화면 단위**: 라우터가 없는 단일 페이지다. 2.1절의 "페이지"는 읽기 진행도로 구분되는 스크롤 구간이고, 경로 칸에는 그 구간의 진행도 범위를 적었다.
-- **구간 경계 근거**: `components/BurjKhalifaData.ts`의 `PHASES` 상수와 `App.tsx`의 `ScrollControls pages={7}`, `components/Overlay.tsx`의 구간 높이 배열이다. 다섯째 구간만 길이가 두 배다.
-- **PRD와의 차이**: PRD는 공정을 다섯 단계, 스크롤을 20퍼센트 균등으로 적었다. 코드는 여섯 단계이고 균등하지 않다. 이 문서는 코드를 따랐다.
-- **4절 잠정 (Q4)**: 원천에 인터랙션 원칙 선언이 없다. 다섯 줄 모두 코드 동작에서 역추출했다.
-- **5절 전제**: 스타터킷이 아니어서 재활용 대조 대상(`components.md`)이 없다. 열네 개 전부 신규로 적었다.
-- **분량**: 235줄(권장 250).
+- 사용자는 리팩터링을 승인했으며 콘텐츠 승인까지 의미하지 않는다. 이번에 바뀐 파일 경로와 모듈 경계는 잠정이다.
+- 단일 페이지, 여섯 공정, 일곱 페이지 높이의 경험과 정적 데이터 모델은 기존 승인 상태를 유지한다.
+- 정확한 기존 파일에서 새 모듈로의 이동은 [Appendix Architecture Migration](appendix-architecture-migration.md)을 따른다.
 
 ---
 
@@ -36,61 +31,41 @@
 
 R 읽기 · W 생성 · D 갱신/삭제.
 
-### 1.1 여섯 공정이 이어지는 순서를 끝까지 따라본다
+### 1.1 여섯 공정의 순서를 끝까지 따라본다
 
-- **사용자**: 건축 애호가, 건축 학습자 (잠정)
-- **진입**: 직접 방문 · **성공 조건**: 첫 구간부터 마지막 구간까지 끊기지 않고 도달 · **예외**: 없음
+- 사용자: 건축 애호가, 건축 학습자 (잠정) · 진입: 직접 방문 · 성공 조건: 마지막 공정에 도달 · 예외: 없음
 
-| 단계 | 화면 | 사용자 행동 | 다루는 대상 (R/W/D) | 결과 |
+| 단계 | 화면 | 사용자 행동 | 다루는 대상 | 결과 |
 |---|---|---|---|---|
-| 1 | Stage I Foundation | 첫 화면을 본다 | ConstructionStage R | 지면 위 매트가 깔리고 파일이 박힌다 |
-| 2 | Stage II The Core | 스크롤을 이어간다 | StructureElement R | 중심 코어가 세 날개를 달고 솟는다 |
-| 3 | Stage III Setbacks | 계속 내려간다 | Tier R (많음) | 날개가 서로 다른 높이에서 물러선다 |
-| 4 | Stage IV Cladding | 계속 내려간다 | Tier R (많음) | 유리와 멀리언이 켜마다 입혀진다 |
-| 5 | Stage V Illumination | 가장 긴 구간을 지난다 | TimeOfDay R | 해가 기울고 창과 띠조명이 켜진다 |
-| 6 | Stage VI The Spire | 마지막까지 내려간다 | StructureElement R | 첨탑이 내려와 꽂히고 전체가 보인다 |
-
-비고:
-
-- 단계 1: 조작 안내가 없다. 화면이 스크롤을 기다리는 상태로 시작한다.
-- 단계 3과 4: 티어는 한꺼번에 나타나지 않고 아래에서 위로 차례를 두고 자란다.
-- 단계 6: 이 구간에서만 시점이 크게 물러나 완성된 실루엣 전체가 한 화면에 들어온다.
+| 1 | Stage I Foundation | 첫 화면을 본다 | ConstructionStage R | 매트와 파일이 나타난다 |
+| 2 | Stage II The Core | 스크롤한다 | StructureElement R | 중심 코어가 솟는다 |
+| 3 | Stage III Setbacks | 계속 내린다 | Tier R | 날개가 후퇴한다 |
+| 4 | Stage IV Cladding | 계속 내린다 | Tier R | 외피가 입혀진다 |
+| 5 | Stage V Illumination | 긴 구간을 지난다 | TimeOfDay R | 하늘과 조명이 변한다 |
+| 6 | Stage VI The Spire | 끝까지 내린다 | StructureElement R | 첨탑과 전체가 보인다 |
 
 ### 1.2 한 단계에 머물러 해설과 수치, 현장 사진을 확인한다
 
-- **사용자**: 건축 학습자, 건축 애호가 (잠정)
-- **진입**: 시나리오 1의 어느 구간 · **성공 조건**: 해설, 기술 노트, 수치, 사진을 한 자리에서 읽음 · **예외**: 빠르게 지나가면 등장 연출이 끝난 상태로 보인다
+- 사용자: 건축 학습자, 건축 애호가 (잠정) · 진입: 어느 공정 구간 · 성공 조건: 한 자리에서 읽음 · 예외: 빠르게 지나가면 완성 상태
 
-| 단계 | 화면 | 사용자 행동 | 다루는 대상 (R/W/D) | 결과 |
+| 단계 | 화면 | 사용자 행동 | 다루는 대상 | 결과 |
 |---|---|---|---|---|
-| 1 | Stage III Setbacks | 스크롤을 멈춘다 | ConstructionStage R | 번호와 제목이 한 글자씩 올라온다 |
-| 2 | Stage III Setbacks | 해설을 읽는다 | ConstructionStage R | 본문이 뒤이어 같은 리듬으로 드러난다 |
-| 3 | Stage III Setbacks | 기술 노트를 확인한다 | ConstructionStage R | 가는 선 아래 보조 문단이 따로 놓인다 |
-| 4 | Stage III Setbacks | 수치를 본다 | ConstructionStage R | 짧은 선과 함께 대표 수치 한 줄이 남는다 |
-| 5 | Stage III Setbacks | 사진을 본다 | StagePhoto R | 실제 현장 사진이 본문 아래로 올라온다 |
-| 6 | 고정 레이어 | 모형과 사진을 견준다 | StructureElement R | 같은 공정이 모형과 사진으로 겹쳐 읽힌다 |
-
-비고:
-
-- 단계 1부터 5까지는 한 구간 안에서 순서가 정해져 있다. 번호, 제목, 부제, 본문, 기술 노트, 수치, 사진의 차례다.
-- 셋째 구간을 예로 적었다. 여섯 구간이 같은 순서를 쓴다.
-- 단계 6: 3차원 장면은 본문 뒤에 계속 떠 있어 읽는 동안에도 모형이 함께 보인다.
+| 1 | 공정 구간 | 멈춰 제목을 본다 | ConstructionStage R | 번호와 제목이 드러난다 |
+| 2 | 공정 구간 | 해설과 노트를 읽는다 | ConstructionStage R | 구조 원리를 읽는다 |
+| 3 | 공정 구간 | 수치를 본다 | ConstructionStage R | 대표 수치가 남는다 |
+| 4 | 공정 구간 | 사진을 본다 | StagePhoto R | 현장 기록을 확인한다 |
+| 5 | 고정 장면 | 모형과 사진을 견준다 | StructureElement R | 같은 공정으로 읽는다 |
 
 ### 1.3 완성된 타워가 밤으로 넘어가는 장면을 관람한다
 
-- **사용자**: 연출 관람자, 건축 애호가 (잠정)
-- **진입**: Stage V Illumination · **성공 조건**: 낮에서 밤까지의 변화를 끊김 없이 관람 · **예외**: 새로고침 시 첫 구간의 낮으로 되돌아간다
+- 사용자: 연출 관람자, 건축 애호가 (잠정) · 진입: Stage V Illumination · 성공 조건: 전환을 관람 · 예외: 새로고침 시 처음으로 돌아감
 
-| 단계 | 화면 | 사용자 행동 | 다루는 대상 (R/W/D) | 결과 |
+| 단계 | 화면 | 사용자 행동 | 다루는 대상 | 결과 |
 |---|---|---|---|---|
-| 1 | Stage V Illumination | 긴 구간에 들어선다 | TimeOfDay R | 하늘이 오후색에서 노을색으로 넘어간다 |
-| 2 | Stage V Illumination | 계속 내려간다 | TimeOfDay R | 해가 내려가 사라지고 달이 우측에 뜬다 |
-| 3 | 고정 레이어 | 지면 글자를 본다 | TimeOfDay R | 본문 색과 테두리가 밤 배색으로 바뀐다 |
-| 4 | Stage V Illumination | 건물을 본다 | StructureElement R | 창이 따뜻하게 켜지고 띠조명이 들어온다 |
-| 5 | Stage VI The Spire | 끝까지 내려간다 | StructureElement R | 첨탑 항공장애등이 엇갈려 깜빡인다 |
-| 6 | Stage VI The Spire | 마지막 화면에 머문다 | TimeOfDay R | 하늘이 가장 어두워지고 관람이 끝난다 |
-
-비고: 시간대는 사용자가 따로 조작하는 값이 아니라 읽기 진행도에서 파생된다. 지면의 글자색과 3차원 장면의 하늘색이 같은 값을 구독한다.
+| 1 | Stage V Illumination | 긴 구간에 들어선다 | TimeOfDay R | 하늘색이 바뀐다 |
+| 2 | 고정 장면 | 지면 글자를 본다 | TimeOfDay R | 문서 배색이 전환된다 |
+| 3 | Stage V Illumination | 건물을 본다 | StructureElement R | 창과 띠조명이 켜진다 |
+| 4 | Stage VI The Spire | 끝까지 내린다 | StructureElement R | 첨탑 등이 보인다 |
 
 ---
 
@@ -98,36 +73,35 @@ R 읽기 · W 생성 · D 갱신/삭제.
 
 ### 2.1 페이지 리스트
 
-| 페이지 | 경로 | 한 줄 목적 | 다루는 대상 | 등장 시나리오 |
+| 페이지 | 경로 | 한 줄 목적 | 다루는 대상 | 시나리오 |
 |---|---|---|---|---|
-| Stage I Foundation | `/` 0~14% | 기초 매트와 파일 공정 | ConstructionStage, StructureElement | 1, 2 |
-| Stage II The Core | `/` 14~29% | 중심 코어의 상승 | ConstructionStage, StructureElement | 1, 2 |
-| Stage III Setbacks | `/` 29~43% | 나선형 세트백의 형성 | ConstructionStage, Tier | 1, 2 |
-| Stage IV Cladding | `/` 43~57% | 커튼월 외피 부착 | ConstructionStage, Tier | 1, 2 |
-| Stage V Illumination | `/` 57~86% | 상부 타워와 야간 조명 | ConstructionStage, Tier, TimeOfDay | 1, 2, 3 |
-| Stage VI The Spire | `/` 86~100% | 첨탑 완성과 전체 조망 | ConstructionStage, StructureElement | 1, 2, 3 |
-| 고정 레이어 | 경로 없음 | 제호 The Vertical Breath, 크레딧, 장면 | TimeOfDay, StagePhoto | 2, 3 |
+| Stage I Foundation | `/` 0~14% | 기초 매트와 파일 | 단계, 구조 요소 | 1, 2 |
+| Stage II The Core | `/` 14~29% | 중심 코어 상승 | 단계, 구조 요소 | 1, 2 |
+| Stage III Setbacks | `/` 29~43% | 나선형 세트백 | 단계, 티어 | 1, 2 |
+| Stage IV Cladding | `/` 43~57% | 커튼월 외피 | 단계, 티어 | 1, 2 |
+| Stage V Illumination | `/` 57~86% | 야간 조명 | 단계, 티어, 시간대 | 1, 2, 3 |
+| Stage VI The Spire | `/` 86~100% | 첨탑과 전체 조망 | 단계, 구조 요소 | 1, 2, 3 |
+| 고정 레이어 | 경로 없음 | 제호, 크레딧, 장면 | 시간대, 공정 사진 | 2, 3 |
 
-비고: 경로 칸의 값은 읽기 진행도 범위다. 다섯째 구간이 두 배 길어 전체가 일곱 페이지 높이다.
+비고: 경로 값은 읽기 진행도 범위다. Stage V는 두 페이지 높이여서 전체가 일곱 페이지 높이다.
 
 ### 2.2 계층 트리
 
 ```
-단일 화면 (/)
-├── 고정 레이어 (진행도와 무관하게 떠 있음)
-│   ├── 머리말 (간행 정보, 제호, 부제)
-│   ├── 꼬리말 (크레딧, 인용문)
-│   └── 3차원 장면 (하늘, 해와 달, 지면 조명, 건물)
-└── 스크롤 본문 (일곱 페이지 높이)
-    ├── Stage I Foundation
-    ├── Stage II The Core
-    ├── Stage III Setbacks
-    ├── Stage IV Cladding
-    ├── Stage V Illumination (두 배 길이)
-    └── Stage VI The Spire
+App
+├── Header / Footer
+└── ConstructionExperience (Canvas)
+    ├── ConstructionScene
+    │   ├── stages (6)
+    │   └── environment
+    └── Scroll HTML
+        └── ConstructionOverlay
+            └── ConstructionSection (6)
+                ├── TextReveal
+                └── ImageReveal
 ```
 
-구간 하나의 내부 순서: 번호 · 제목 · 부제 · 해설 · 기술 노트 · 수치 · 사진.
+비고: 이 트리는 승인된 리팩터링 목표의 모듈 경계다. 최종 export 이름과 Storybook 경로는 구현 검증 전 잠정이다.
 
 ---
 
@@ -135,94 +109,65 @@ R 읽기 · W 생성 · D 갱신/삭제.
 
 ### 3.1 대상 정의
 
-정의와 영속성:
-
-| 이름 | 식별자 | 주요 속성 (윤곽) | 영속성 |
+| 이름 | 식별자 | 주요 속성 | 영속성 |
 |---|---|---|---|
-| 공정 단계 | ConstructionStage | 번호, 제목, 부제, 해설, 기술 노트, 수치 | 정적 |
-| 구조 요소 | StructureElement | 공정 구분, 등장 구간, 형태, 재질 | 정적 |
-| 티어 | Tier | 순번, 높이, 기준 높이, 세 날개 길이와 폭 | 정적 |
-| 시간대 | TimeOfDay | 낮·석양·황혼·밤 강도, 하늘색, 발광 강도 | 휘발 |
-| 공정 사진 | StagePhoto | 파일 경로, 대체 텍스트, 원본 비율 | 정적 |
-
-흐름과 관계:
+| 공정 단계 | ConstructionStage | 제목, 해설, 노트, 수치 | 정적 |
+| 구조 요소 | StructureElement | 공정, 형태, 재질 | 정적 |
+| 티어 | Tier | 높이, 날개 길이와 폭 | 정적 |
+| 시간대 | TimeOfDay | 하늘색, 발광 강도 | 휘발 |
+| 공정 사진 | StagePhoto | 경로, 대체 텍스트 | 정적 |
 
 | 이름 | 만드는 곳 | 보이는 페이지 | 관계 |
 |---|---|---|---|
-| 공정 단계 | 정적 데이터 | 여섯 구간 전부 | StagePhoto를 하나 참조 |
-| 구조 요소 | 정적 데이터 | 여섯 구간 전부 | Tier와 TimeOfDay를 참조 |
-| 티어 | 세트백 스케줄로 생성 | Stage III, IV, V | StructureElement에 속함 |
-| 시간대 | 읽기 진행도에서 파생 | 여섯 구간과 고정 레이어 | 모든 색과 조명에 영향 |
-| 공정 사진 | 정적 파일 | 여섯 구간 전부 | ConstructionStage에 종속 |
-
-비고:
-
-- 영속성 값은 정적 / 휘발 / 세션 / 브라우저 / 서버다. 이 프로젝트에는 정적과 휘발만 있다.
-- 티어는 손으로 적은 목록이 아니라 높이 배열과 날개별 세트백 높이에서 계산된 스물네 켜다. 날개 셋의 세트백 높이가 서로 달라 나선이 생긴다.
-- 모형의 높이 비율은 타워 47 대 첨탑 8, 전체 55다(선언 상수). 실제로 생성되는 형상은 타워 39.8에 첨탑 8을 더한 47.8이다.
-- 읽기 진행도 자체는 UI 내부 상태이고 다루는 대상이 아니다 (01 4.2절 비고).
+| 공정 단계 | `constructionStages` | 여섯 구간 | 사진 하나를 참조 |
+| 구조 요소 | `burjKhalifaData` | 여섯 구간 | 티어와 시간대 참조 |
+| 티어 | 기하 데이터 계산 | III, IV, V | 구조 요소에 속함 |
+| 시간대 | 진행도에서 파생 | 전 구간, 고정 장면 | 색과 조명에 영향 |
+| 공정 사진 | `src/assets/stages` | 여섯 구간 | 공정 단계에 종속 |
 
 ### 3.2 데이터 모델 활용 (이름 사전)
 
-| 데이터명 | 한국어 | 코드 식별자 | 예상 테이블명 | 생성 책임 페이지 |
+| 데이터명 | 한국어 | 코드 식별자 | 예상 테이블명 | 생성 책임 |
 |---|---|---|---|---|
 | `ConstructionStage` | 공정 단계 | `constructionStage` | (정적) | 없음 |
 | `StructureElement` | 구조 요소 | `structureElement` | (정적) | 없음 |
 | `Tier` | 티어 | `tier` | (정적) | 없음 |
-| `TimeOfDay` | 시간대 | `timeOfDay` | (클라이언트) | 고정 레이어 |
+| `TimeOfDay` | 시간대 | `timeOfDay` | (클라이언트) | 고정 장면 |
 | `StagePhoto` | 공정 사진 | `stagePhoto` | (정적) | 없음 |
 
-비고: 서버 데이터가 없는 프로젝트다. `/supabase-integration`을 부르게 되면 이 표부터 다시 정한다.
+비고: 서버 데이터가 없으므로 테이블을 만들지 않는다. 데이터 이관 책임은 `constructionStages`, `burjKhalifaData`, `scrollConfig`에 나뉜다. (잠정)
 
 ---
 
-## 4. 인터랙션 원칙 (최대 5)
+## 4. 인터랙션 원칙
 
-| 원칙 | 근거 (01 3절 가치) | 드러나는 곳 | 유도되는 컴포넌트 유형 |
+| 원칙 | 근거 | 드러나는 곳 | 유도 모듈 |
 |---|---|---|---|
-| 조작은 읽기 진행 하나뿐이다 | Verticality | 전 구간 | 진행도 컨트롤러, 감쇠 스크롤 |
-| 한 번에 한 공정만 자란다 | Legibility | 여섯 구간 경계 | 구간별 등장 게이트 |
-| 시점이 아니라 건물이 움직인다 | Verticality | 전 구간, 마지막 조망 | 진행도 연동 위치·줌 |
-| 시간은 진행도에서 파생된다 | Record | 하늘, 조명, 지면 글자 | 전역 테마 구독자 |
-| 글자와 사진은 시야에 들어올 때 온다 | Record | 구간 본문 | 등장 관찰자, 글자 단위 전환 |
-
-비고:
-
-- 원칙 1: 스크롤은 즉시 반응하지 않고 감쇠를 거쳐 따라온다. 빠르게 굴려도 장면이 건너뛰지 않는다.
-- 원칙 2: 각 구간은 자기 진행도 범위 안에서만 자라고, 범위 밖에서는 완성 상태로 남는다.
-- 원칙 3: 카메라는 각도를 바꾸지 않는다. 건물이 내려가고 시점이 물러나는 두 가지만 쓴다.
-- 원칙 4: 3차원 하늘색과 지면의 글자·테두리 색이 하나의 진행도 값을 함께 구독한다 (Q4).
-- 원칙 5: 구간 안의 요소는 정해진 차례로 들어오고, 한 번 들어온 요소는 되돌아가지 않는다.
+| 조작은 읽기 진행 하나다 | Verticality | 전 구간 | `scrollConfig` |
+| 한 번에 한 공정만 자란다 | Legibility | 공정 경계 | stages |
+| 시점보다 건물이 움직인다 | Verticality | 전 구간 | 3D scene |
+| 시간은 진행도에서 파생된다 | Record | V, VI | environment |
+| 글과 사진은 공정에 맞춰 드러난다 | Legibility | 본문 | reveal modules |
 
 ---
 
 ## 5. 컴포넌트 리스트
 
-| 컴포넌트 | 페이지/섹션 | 구분 | 카테고리 | 비고 |
-|---|---|---|---|---|
-| Experience | 고정 레이어 | 신규 | 3d | 스타터킷 없음, 장면 루트 |
-| Building | 고정 레이어 | 신규 | 3d | 스타터킷 없음, 구조 묶음 |
-| Foundation | Stage I Foundation | 신규 | 3d | 스타터킷 없음, 매트와 파일 |
-| Core | Stage II The Core | 신규 | 3d | 스타터킷 없음, 코어와 날개 |
-| Setbacks | Stage III Setbacks | 신규 | 3d | 스타터킷 없음, 하부 티어 |
-| Cladding | Stage IV Cladding | 신규 | 3d | 스타터킷 없음, 중부 티어 |
-| Illumination | Stage V Illumination | 신규 | 3d | 스타터킷 없음, 상부 티어 |
-| Spire | Stage VI The Spire | 신규 | 3d | 스타터킷 없음, 첨탑과 등 |
-| DayNightCycle | 고정 레이어 | 신규 | dynamic-color | 스타터킷 없음, 4절 원칙 4 |
-| CinematicCamera | 어디에도 없음 | 신규 | 3d | 스타터킷 없음, 미사용 파일 |
-| Overlay | 스크롤 본문 | 신규 | templates | 스타터킷 없음, 구간 본문 |
-| TextReveal | 스크롤 본문 | 신규 | kinetic-typography | 스타터킷 없음, 4절 원칙 5 |
-| ImageReveal | 스크롤 본문 | 신규 | media | 스타터킷 없음, 4절 원칙 5 |
-| BurjKhalifaData | 전역 | 신규 | data | 스타터킷 없음, 티어와 상수 |
+| 모듈 | 책임 | 구분 | 위치 |
+|---|---|---|---|
+| App | 얇은 조립 지점 | 수정 | `src/App.tsx` |
+| Header, Footer | 간행 정보와 크레딧 | 신규 | `components/layout` |
+| ConstructionExperience | Canvas 경계 | 신규 | `components/three` |
+| ConstructionScene, Building | 장면과 타워 | 수정 | `components/three` |
+| 6 stage modules | 공정별 형상 | 수정 | `components/three/stages` |
+| DayNightCycle | 하늘과 조명 | 수정 | `components/three/environment` |
+| ConstructionOverlay | 스크롤 본문 | 수정 | `components/scroll` |
+| ConstructionSection | 구간 한 벌 | 신규 | `components/scroll` |
+| TextReveal | 텍스트 등장 | 수정 | `kinetic-typography` |
+| ImageReveal | 사진 등장 | 수정 | `media` |
+| 3 data modules | 콘텐츠, 기하, 진행 | 수정 | `src/data` |
 
-비고:
-
-- **합계**: 재활용 0 · 수정 0 · 신규 14.
-- **구분 근거**: 스타터킷이 아니어서 `components.md`와 대조할 대상이 없다. 전부 이 저장소에서만 존재하므로 신규다.
-- **카테고리**: `dynamic-color`, `templates`, `kinetic-typography`, `media`는 `directory-structure.md`의 폴더명이다. `3d`와 `data`는 목록 밖이고 이 프로젝트가 추가한 구분이다.
-- **미사용 파일**: `components/CinematicCamera.tsx`는 어느 파일에서도 불러오지 않는다. 줌과 시점 이동은 `Experience`와 `Building`이 직접 한다. 지울지 살릴지는 결정이 필요하다.
-- **파일 위치**: 열네 개 모두 `components/` 바로 아래에 평평하게 있다. 카테고리 폴더 구조는 쓰지 않는다.
-- **훅**: `hooks/useDayNight.ts`(시간대 계산)와 `hooks/useTheme.ts`(지면 색 갱신)는 컴포넌트가 아니어서 표에 넣지 않았다. 둘 다 4절 원칙 4의 구현이다.
+비고: 표의 경로는 스타터 기반 리팩터링의 목표 구조이며 잠정이다. Storybook 문서용 래퍼는 원본 Markdown을 raw import하며 본문을 복제하지 않는다.
 
 ---
 
@@ -230,6 +175,6 @@ R 읽기 · W 생성 · D 갱신/삭제.
 
 | 받는 곳 | 가져가는 것 |
 |---|---|
-| 03-visual-direction | 2.1절 구간 목록, 구간별 콘텐츠 신호, 4절 원칙 |
-| /supabase-integration | 3.2절 사전, 2.1절, 1절 단계 표, 5절 컴포넌트 리스트 |
-| /component-work | 5절 신규 항목 |
+| 03-visual-direction | 구간 목록, 콘텐츠 신호, 인터랙션 원칙 |
+| 구현 모듈 | 3절 데이터 책임, 4절 원칙, 5절 모듈 경계 |
+| Storybook Docs | 원본 계획 Markdown의 raw import |

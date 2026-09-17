@@ -1,51 +1,51 @@
-# The Vertical Breath - 프로젝트 룰
+# The Vertical Breath 프로젝트 룰
 
 ## 프로젝트 개요
-부르즈 할리파의 건축 철학을 모티브로 한 인터랙티브 3D 웹 시각화 프로젝트.
-스크롤 기반으로 5단계 건축 공정을 시각화합니다.
 
-## 기술 스택
-- **Runtime**: React 18, TypeScript (strict mode)
-- **3D Engine**: Three.js, @react-three/fiber
-- **Utilities**: @react-three/drei (ScrollControls, RoundedBox)
-- **Animation**: @react-spring/three
-- **Styling**: Tailwind CSS
+부르즈 할리파의 건설 과정을 다루는 단일 페이지 3D 에디토리얼이다. 스크롤은 Foundation, Core, Setbacks, Cladding, Illumination, Spire의 여섯 공정을 지나며 전체 경험은 일곱 페이지 높이다.
 
-## 핵심 원칙
+## 기술 기준
 
-### 성능 최우선
-- Three.js 오브젝트는 반드시 `useMemo`로 메모이제이션
-- geometry와 material은 재사용하여 GPU 메모리 절약
-- `useFrame` 내부에서 상태 업데이트 최소화
-- `dispose()` 호출로 메모리 누수 방지
+- Runtime: React 19, TypeScript strict, Vite
+- 3D: Three.js, React Three Fiber, drei, postprocessing
+- Styling: 로컬 Tailwind 빌드와 `src/styles/global.css`, 런타임 CDN 금지
+- Docs: Storybook 10, addon-docs, `EditorialDocument`
+- Package manager: pnpm
 
-### Bruno Simon 스타일 준수
-- 모든 3D 오브젝트는 `RoundedBox` 또는 둥근 모서리 geometry 사용
-- 파스텔 톤 컬러 팔레트 엄격 준수
-- '고급 장난감' 같은 미니멀한 미학 유지
+## 구조
 
-### 스크롤 기반 아키텍처
-- 5단계 공정을 0-100% 스크롤 범위로 매핑
-- `@react-three/drei`의 `ScrollControls` 사용
-- 스크롤 진행도는 `useScroll` hook으로 관리
-
-## 디렉토리 구조 규칙
-```
+```text
 src/
-├── components/       # React 컴포넌트
-│   └── three/        # R3F 전용 3D 컴포넌트
-├── hooks/            # 커스텀 훅
-├── constants/        # 상수 정의 (색상, 스테이지 데이터)
-├── types/            # TypeScript 타입 정의
-└── utils/            # 유틸리티 함수
+├── App.tsx, main.tsx
+├── assets/stages/
+├── components/layout/
+├── components/three/stages/, environment/
+├── components/scroll/
+├── components/kinetic-typography/, media/
+├── data/
+├── hooks/, types/, utils/
+└── styles/global.css
 ```
 
-## 파일 참조
-- @PRD.md - 상세 기획 문서
-- @.claude/rules/ - 세부 규칙들
+`App.tsx`는 Header, Footer, ConstructionExperience만 조립한다. overlay는 Canvas의 Scroll HTML 안에 둔다. 공정 콘텐츠는 `constructionStages`, 타워 기하와 색은 `burjKhalifaData`, 스크롤·카메라·시간대 경계는 `scrollConfig`에 둔다. DOM과 Canvas 책임을 섞지 않는다.
 
-## 빌드 & 테스트 명령어
-- 개발 서버: `npm run dev`
-- 빌드: `npm run build`
-- 타입 체크: `npm run typecheck`
-- 린트: `npm run lint`
+## 작업 원칙
+
+- 현재의 에디토리얼 청회색, 정사영, 낮에서 밤으로의 전환을 유지한다.
+- 건물 형상은 공정이 누적되도록 만들고, 비싼 geometry·material과 반복 계산을 재사용한다.
+- `useFrame`에서 React 상태를 갱신하지 않는다.
+- 정적 문서는 `docs/buzz-khalifa/`만 원본으로 둔다. Storybook Docs에는 raw import와 `EditorialDocument`만 둔다.
+- 도메인별 건물 모델링 지침은 `.claude/skills/building-modeling/`을 따른다.
+
+## 명령
+
+```bash
+pnpm dev
+pnpm typecheck
+pnpm build
+pnpm test
+pnpm storybook
+pnpm build-storybook
+```
+
+명령의 통과 여부는 실행 결과로만 판단한다.

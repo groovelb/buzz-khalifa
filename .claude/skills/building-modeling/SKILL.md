@@ -1,17 +1,17 @@
 ---
 name: building-modeling
-description: Create stable, performant 3D building components for the Burj Khalifa visualization. Use when adding new construction phases, modifying building geometry, or fixing 3D rendering issues. Follows Bruno Simon style with React Three Fiber best practices.
+description: Create stable, performant 3D building components for the Burj Khalifa visualization. Use when adding new construction phases, modifying building geometry, or fixing 3D rendering issues. Preserves the project editorial blue-grey direction with React Three Fiber best practices.
 ---
 
-This skill guides creation of stable, high-performance 3D building components for The Vertical Breath project. All components must follow Bruno Simon's toy-like aesthetic with rounded edges and pastel colors.
+This skill guides creation of stable, high-performance 3D building components for The Vertical Breath project. Existing geometry and animation remain unchanged during structural refactors. Current visual direction is defined by `docs/buzz-khalifa/03-visual-direction.md` and `.claude/rules/design-system.md`.
 
 ## Core Principles
 
-### Bruno Simon Style (Mandatory)
-- **Always use `RoundedBox`** from @react-three/drei, never plain `Box`
-- **Pastel color palette**: warm whites (#f5f5f0), pastel blues (#87ceeb)
-- **Soft lighting**: Environment + ContactShadows, no harsh directional lights
-- **Toy-like aesthetic**: minimal details, smooth surfaces, friendly feel
+### Project Visual Direction
+- Preserve the existing rounded geometry and 24-tier model.
+- Use `src/data/burjKhalifaData.ts` colors and dimensions.
+- Keep the editorial blue-grey materials and scroll-driven day/night lighting.
+- Do not replace the current scene with the legacy pastel toy palette.
 
 ### Performance Requirements (Critical)
 Every component MUST follow these patterns to prevent memory leaks and maintain 60fps:

@@ -1,12 +1,18 @@
 {
-  "name": "the-vertical-breath---skyscraper-construction",
+  "name": "buzz-khalifa",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "node --test tests/*.test.mjs",
+    "build:deploy": "pnpm build && pnpm build-storybook && node scripts/package-deployment.mjs",
+    "generate-structure": "node scripts/generate-project-structure.js"
   },
   "dependencies": {
     "@react-spring/three": "^10.0.3",
@@ -15,13 +21,25 @@
     "@react-three/postprocessing": "^3.0.4",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "three": "^0.182.0"
+    "three": "^0.182.0",
+    "@mui/material": "^7.3.5",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "^0.182.0",
+    "storybook": "^10.1.0",
+    "@storybook/react-vite": "^10.1.0",
+    "@storybook/addon-docs": "^10.1.0",
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.5.6",
+    "autoprefixer": "^10.4.21"
   },
   "packageManager": "pnpm@9.1.0+sha1.217063ce3fcbf44f3051666f38b810f1ddefee4a"
 }
