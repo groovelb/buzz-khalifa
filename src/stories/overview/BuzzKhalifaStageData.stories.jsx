@@ -68,6 +68,26 @@ const COLOR_ROLES = {
 /** 진행도(0~1)를 퍼센트 문자열로 */
 const toPercent = (value) => `${ (value * 100).toFixed(1) }%`;
 
+/** 표 안에서 쓰는 공정 사진 썸네일 */
+function StageThumb({ src, alt }) {
+  return (
+    <Box
+      component="img"
+      src={ src }
+      alt={ alt }
+      loading="lazy"
+      sx={ {
+        width: 72,
+        height: 54,
+        objectFit: 'cover',
+        display: 'block',
+        border: '1px solid',
+        borderColor: 'divider',
+      } }
+    />
+  );
+}
+
 /** 단순 key-value 표 (상수 객체용) */
 function KeyValueTable({ data, keyLabel = 'key', valueLabel = 'value' }) {
   return (
@@ -173,6 +193,7 @@ export const Default = {
             <Table size="small">
               <TableHead>
                 <TableRow>
+                  <TableCell sx={ { fontWeight: 600, width: 90 } }>사진</TableCell>
                   <TableCell sx={ { fontWeight: 600, width: 60 } }>번호</TableCell>
                   <TableCell sx={ { fontWeight: 600 } }>구간</TableCell>
                   <TableCell sx={ { fontWeight: 600, width: 110 } }>키</TableCell>
@@ -183,6 +204,11 @@ export const Default = {
               <TableBody>
                 { phaseRows.map((row) => (
                   <TableRow key={ row.key }>
+                    <TableCell>
+                      { row.stage?.image ? (
+                        <StageThumb src={ row.stage.image } alt={ row.stage.title } />
+                      ) : null }
+                    </TableCell>
                     <TableCell sx={ { fontFamily: 'monospace', fontSize: 13 } }>
                       { row.stage?.number }
                     </TableCell>

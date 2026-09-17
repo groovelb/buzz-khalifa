@@ -4,7 +4,7 @@
  * 수동 편집 금지. 재생성: pnpm generate-structure
  */
 export default {
-  "generatedAt": "2026-09-17T09:16:36.620Z",
+  "generatedAt": "2026-09-17T09:51:35.442Z",
   "root": {
     "name": "App",
     "kind": "component",
@@ -40,32 +40,32 @@ export default {
         "kind": "component",
         "category": "components/three",
         "file": "components/three/ConstructionExperience.tsx",
-        "storyTitle": null,
-        "storyId": null,
+        "storyTitle": "Custom Component/Three/ConstructionExperience",
+        "storyId": "custom-component-three-constructionexperience",
         "children": [
           {
             "name": "ConstructionOverlay",
             "kind": "component",
             "category": "components/scroll",
             "file": "components/scroll/ConstructionOverlay.tsx",
-            "storyTitle": null,
-            "storyId": null,
+            "storyTitle": "Template/ConstructionOverlay",
+            "storyId": "template-constructionoverlay",
             "children": [
               {
                 "name": "ConstructionSection",
                 "kind": "component",
                 "category": "components/scroll",
                 "file": "components/scroll/ConstructionSection.tsx",
-                "storyTitle": null,
-                "storyId": null,
+                "storyTitle": "Section/ConstructionSection",
+                "storyId": "section-constructionsection",
                 "children": [
                   {
                     "name": "TextReveal",
                     "kind": "component",
                     "category": "components/kinetic-typography",
                     "file": "components/kinetic-typography/TextReveal.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/Kinetic Typography/TextReveal",
+                    "storyId": "custom-component-kinetic-typography-textreveal",
                     "children": [],
                     "hooks": [],
                     "data": []
@@ -75,8 +75,8 @@ export default {
                     "kind": "component",
                     "category": "components/media",
                     "file": "components/media/ImageReveal.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/Media/ImageReveal",
+                    "storyId": "custom-component-media-imagereveal",
                     "children": [],
                     "hooks": [],
                     "data": []

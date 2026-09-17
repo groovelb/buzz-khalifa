@@ -12,7 +12,8 @@
     "build-storybook": "storybook build",
     "test": "node --test tests/*.test.mjs",
     "build:deploy": "pnpm build && pnpm build-storybook && node scripts/package-deployment.mjs",
-    "generate-structure": "node scripts/generate-project-structure.js"
+    "generate-structure": "node scripts/generate-project-structure.js",
+    "generate-assets": "node scripts/generate-asset-inventory.js"
   },
   "dependencies": {
     "@react-spring/three": "^10.0.3",

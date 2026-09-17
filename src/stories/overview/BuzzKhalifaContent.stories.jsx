@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -33,6 +34,26 @@ const PAGE_NAMES = [
 function HeadCell({ width, children }) {
   return (
     <TableCell sx={ { fontWeight: 600, width } }>{ children }</TableCell>
+  );
+}
+
+/** 표 안에서 쓰는 공정 사진 썸네일 */
+function StageThumb({ src, alt }) {
+  return (
+    <Box
+      component="img"
+      src={ src }
+      alt={ alt }
+      loading="lazy"
+      sx={ {
+        width: 72,
+        height: 54,
+        objectFit: 'cover',
+        display: 'block',
+        border: '1px solid',
+        borderColor: 'divider',
+      } }
+    />
   );
 }
 
@@ -153,6 +174,7 @@ export const Default = {
           <Table size="small">
             <TableHead>
               <TableRow>
+                <HeadCell width={ 90 }>미리보기</HeadCell>
                 <HeadCell width={ 60 }>number</HeadCell>
                 <HeadCell width={ 140 }>title</HeadCell>
                 <HeadCell>image</HeadCell>
@@ -161,6 +183,9 @@ export const Default = {
             <TableBody>
               { CONSTRUCTION_STAGES.map((stage) => (
                 <TableRow key={ stage.number }>
+                  <TableCell>
+                    { stage.image ? <StageThumb src={ stage.image } alt={ stage.title } /> : null }
+                  </TableCell>
                   <TableCell sx={ { fontFamily: 'monospace', fontSize: 12 } }>{ stage.number }</TableCell>
                   <TableCell sx={ { fontSize: 13, fontWeight: 600 } }>{ stage.title }</TableCell>
                   <TableCell sx={ { fontFamily: 'monospace', fontSize: 11, color: 'text.secondary' } }>
