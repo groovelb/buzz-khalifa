@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Environment, useScroll } from '@react-three/drei';
 import * as THREE from 'three';
 import { BuildingModel } from '@/components/three/BuildingModel';
+import { BuildingProgressContext } from '@/components/three/BuildingProgressContext';
 import { DayNightCycle } from '@/components/three/environment/DayNightCycle';
 import { BUILDING } from '@/data/burjKhalifaData';
 import { SCENE_TIMING } from '@/data/scrollConfig';
@@ -133,8 +134,8 @@ export const ConstructionScene: React.FC = () => {
   });
 
   return (
-    <>
-      {/* 진행도 동기화 (공정 컴포넌트보다 먼저 구독되어야 한다) */}
+    <BuildingProgressContext.Provider value={progressRef}>
+      {/* 진행도 동기화 (소비 컴포넌트보다 먼저 구독되어야 한다) */}
       <ScrollProgressSync targetRef={progressRef} />
 
       {/* Day/Night Cycle System */}
@@ -170,6 +171,6 @@ export const ConstructionScene: React.FC = () => {
       <group ref={buildingGroupRef}>
         <BuildingModel progress={progressRef.current} progressSource={progressRef} />
       </group>
-    </>
+    </BuildingProgressContext.Provider>
   );
 };

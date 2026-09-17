@@ -273,7 +273,7 @@ export const Default = {
           <Typography variant="body2" color="text.secondary" sx={ { mb: 3 } }>
             리서치 자료 { referenceImages.length }장과 논문 한 편은 <code>src/assets/reference/</code>에 있다.
             화면에 싣지 않고 모델 치수와 규칙의 근거로만 쓴다. 각 자료가 어떤 결정에 쓰였는지는
-            <a href="?path=/story/overview-buzz-khalifa-08-research--default" target="_top"> 08 Research </a>
+            <a href="?path=/story/overview-buzz-khalifa-08-domain-knowledge-research--default" target="_top"> 08 Domain Knowledge &amp; Research </a>
             에서 용도와 함께 본다.
           </Typography>
 

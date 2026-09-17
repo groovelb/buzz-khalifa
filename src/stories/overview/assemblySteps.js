@@ -11,7 +11,7 @@ export const ASSEMBLY_STEPS = [
     what: '단면도, 평면 변화, 첨탑 인양 사진, 구조 논문을 모은다',
     where: 'src/assets/reference/',
     stories: [
-      { label: '08 Research', id: 'overview-buzz-khalifa-08-research--default' },
+      { label: '08 Domain Knowledge', id: 'overview-buzz-khalifa-08-domain-knowledge-research--default' },
     ],
   },
   {
@@ -30,7 +30,7 @@ export const ASSEMBLY_STEPS = [
     what: '진행도 하나로 여섯 공정의 형상을 그린다. 스크롤과 카메라는 모른다',
     where: 'src/components/three/BuildingModel.tsx',
     stories: [
-      { label: 'BuildingModel', id: 'custom-component-three-buildingmodel--default' },
+      { label: 'BuildingModel', id: 'custom-component-3-scene-buildingmodel--default' },
     ],
   },
   {
@@ -39,7 +39,7 @@ export const ASSEMBLY_STEPS = [
     what: '진행도를 한 번 읽어 모델, 회전과 이동, 카메라, 조명, 낮과 밤에 나눠 준다',
     where: 'src/components/three/ConstructionScene.tsx',
     stories: [
-      { label: 'ConstructionScene', id: 'custom-component-three-constructionscene--default' },
+      { label: 'ConstructionScene', id: 'custom-component-3-scene-constructionscene--default' },
     ],
   },
   {
@@ -59,7 +59,7 @@ export const ASSEMBLY_STEPS = [
     where: 'src/App.tsx · src/components/three/ConstructionExperience.tsx',
     stories: [
       { label: 'Buzz Khalifa', id: 'page-buzz-khalifa--default' },
-      { label: 'ConstructionExperience', id: 'custom-component-three-constructionexperience--default' },
+      { label: 'ConstructionExperience', id: 'custom-component-3-scene-constructionexperience--default' },
     ],
   },
 ];

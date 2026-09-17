@@ -17,7 +17,7 @@
 | 6. 다음 문서로 넘기는 것 | 잠정 | Storybook 문서 추가 |
 
 문서 상태: 잠정 승인 (하드 게이트 충족)
-개정: 2026-09-17 v3 · 변경: `src/` 기반 모듈 경계와 데이터 이관을 반영
+개정: 2026-09-18 v4 · 변경: 5절을 전 컴포넌트 23개로 확장, 진행도 분리 반영
 
 비고:
 
@@ -153,22 +153,42 @@ App
 
 ## 5. 컴포넌트 리스트
 
+프로젝트 전용 18개와 문서 전용 재사용 5개, 모두 23개다.
+
 | 모듈 | 책임 | 구분 | 위치 |
 |---|---|---|---|
-| App | 얇은 조립 지점 | 수정 | `src/App.tsx` |
-| Header, Footer | 간행 정보와 크레딧 | 신규 | `components/layout` |
-| ConstructionExperience | Canvas 경계 | 신규 | `components/three` |
-| ConstructionScene | 스크롤 반응 장면 | 수정 | `components/three` |
+| App | 얇은 조립 지점 | 신규 | `src/App.tsx` |
+| Header | 제호와 간행 정보 | 신규 | `components/layout` |
+| Footer | 크레딧과 인용문 | 신규 | `components/layout` |
+| ConstructionExperience | Canvas와 스크롤 경계 | 신규 | `components/three` |
+| ConstructionScene | 스크롤 반응 장면 | 신규 | `components/three` |
 | BuildingModel | 진행도로 서는 순수 모델 | 신규 | `components/three` |
-| 6 stage modules | 공정별 형상 | 수정 | `components/three/stages` |
-| DayNightCycle | 하늘과 조명 | 수정 | `components/three/environment` |
-| ConstructionOverlay | 스크롤 본문 | 수정 | `components/scroll` |
+| BuildingProgressContext | 진행도 ref 전달 문맥 | 신규 | `components/three` |
+| CinematicCamera | 미사용 카메라 경로 | 신규 | `components/three` |
+| DayNightCycle | 하늘, 해와 달, 조명 | 신규 | `components/three/environment` |
+| Foundation | 매트와 파일 공정 | 신규 | `components/three/stages` |
+| Core | 코어와 세 날개 공정 | 신규 | `components/three/stages` |
+| Setbacks | 하부 티어와 세트백 | 신규 | `components/three/stages` |
+| Cladding | 중부 티어와 커튼월 | 신규 | `components/three/stages` |
+| Illumination | 상부 티어와 야간 조명 | 신규 | `components/three/stages` |
+| Spire | 첨탑과 항공장애등 | 신규 | `components/three/stages` |
+| ConstructionOverlay | 스크롤 본문 전체 | 신규 | `components/scroll` |
 | ConstructionSection | 구간 한 벌 | 신규 | `components/scroll` |
-| TextReveal | 텍스트 등장 | 수정 | `kinetic-typography` |
-| ImageReveal | 사진 등장 | 수정 | `media` |
-| 3 data modules | 콘텐츠, 기하, 진행 | 수정 | `src/data` |
+| TextReveal | 글자 단위 등장 | 신규 | `components/kinetic-typography` |
+| ImageReveal | 사진 등장 | 신규 | `components/media` |
+| EditorialDocument | 원본 문서 렌더러 | 재활용 | `components/storybookDocumentation` |
+| DocumentTitle | 문서 상단 타이틀 바 | 재활용 | `components/storybookDocumentation` |
+| PageContainer | 문서 페이지 컨테이너 | 재활용 | `components/storybookDocumentation` |
+| SectionTitle | 문서 절 제목 | 재활용 | `components/storybookDocumentation` |
+| TreeNode | 구조 트리 노드 | 재활용 | `components/storybookDocumentation` |
 
-비고: 스크롤을 읽는 곳은 ConstructionScene 하나다. BuildingModel 은 진행도만 받아 형상을 그린다(옛 Building 모듈을 둘로 나눴다). Storybook 문서용 래퍼는 원본 Markdown을 raw import하며 본문을 복제하지 않는다.
+비고:
+
+- **합계**: 신규 18 · 재활용 5 · 수정 0. 재활용 5개는 스타터킷에서 가져온 문서 전용 모듈이고 제품 화면에는 쓰이지 않는다.
+- **진행도 분리**: 스크롤을 읽는 곳은 ConstructionScene 하나다. BuildingModel 과 여섯 공정, DayNightCycle 은 BuildingProgressContext 로 받은 진행도만 읽는다(옛 Building 모듈을 둘로 나눴다).
+- **미사용**: CinematicCamera 는 어디에서도 불러오지 않는다. 스토리에 미사용 사실을 적어 두었다.
+- **스토리 분류**: Custom Component 아래를 용도별로 나눴다. 1. Building Stages, 2. Environment & Camera, 3. Scene, 4. Narrative Overlay, 5. Layout. 스크롤 본문은 Template, 구간 한 벌은 Section, 전체 화면은 Page다.
+- **문서 래퍼**: Storybook 문서 스토리는 원본 Markdown을 raw import하며 본문을 복제하지 않는다.
 
 ---
 

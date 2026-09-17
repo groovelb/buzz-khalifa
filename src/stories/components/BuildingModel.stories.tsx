@@ -6,7 +6,7 @@ import { PHASES } from '../../data/scrollConfig';
 
 /** 진행도 하나만 받는 순수 모델. 스크롤과 카메라 연출은 ConstructionScene 이 맡는다. */
 const meta = {
-  title: 'Custom Component/Three/BuildingModel',
+  title: 'Custom Component/3. Scene/BuildingModel',
   component: BuildingModel,
   tags: ['autodocs'],
   parameters: {

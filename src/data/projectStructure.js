@@ -4,7 +4,7 @@
  * 수동 편집 금지. 재생성: pnpm generate-structure
  */
 export default {
-  "generatedAt": "2026-09-17T15:30:47.951Z",
+  "generatedAt": "2026-09-17T15:49:43.557Z",
   "root": {
     "name": "App",
     "kind": "component",
@@ -18,8 +18,8 @@ export default {
         "kind": "component",
         "category": "components/layout",
         "file": "components/layout/Footer.tsx",
-        "storyTitle": null,
-        "storyId": null,
+        "storyTitle": "Custom Component/5. Layout/Footer",
+        "storyId": "custom-component-5-layout-footer",
         "children": [],
         "hooks": [],
         "data": []
@@ -29,8 +29,8 @@ export default {
         "kind": "component",
         "category": "components/layout",
         "file": "components/layout/Header.tsx",
-        "storyTitle": null,
-        "storyId": null,
+        "storyTitle": "Custom Component/5. Layout/Header",
+        "storyId": "custom-component-5-layout-header",
         "children": [],
         "hooks": [],
         "data": []
@@ -40,8 +40,8 @@ export default {
         "kind": "component",
         "category": "components/three",
         "file": "components/three/ConstructionExperience.tsx",
-        "storyTitle": "Custom Component/Three/ConstructionExperience",
-        "storyId": "custom-component-three-constructionexperience",
+        "storyTitle": "Custom Component/3. Scene/ConstructionExperience",
+        "storyId": "custom-component-3-scene-constructionexperience",
         "children": [
           {
             "name": "ConstructionOverlay",
@@ -64,8 +64,8 @@ export default {
                     "kind": "component",
                     "category": "components/kinetic-typography",
                     "file": "components/kinetic-typography/TextReveal.tsx",
-                    "storyTitle": "Custom Component/Kinetic Typography/TextReveal",
-                    "storyId": "custom-component-kinetic-typography-textreveal",
+                    "storyTitle": "Custom Component/4. Narrative Overlay/TextReveal",
+                    "storyId": "custom-component-4-narrative-overlay-textreveal",
                     "children": [],
                     "hooks": [],
                     "data": []
@@ -75,8 +75,8 @@ export default {
                     "kind": "component",
                     "category": "components/media",
                     "file": "components/media/ImageReveal.tsx",
-                    "storyTitle": "Custom Component/Media/ImageReveal",
-                    "storyId": "custom-component-media-imagereveal",
+                    "storyTitle": "Custom Component/4. Narrative Overlay/ImageReveal",
+                    "storyId": "custom-component-4-narrative-overlay-imagereveal",
                     "children": [],
                     "hooks": [],
                     "data": []
@@ -103,32 +103,32 @@ export default {
             "kind": "component",
             "category": "components/three",
             "file": "components/three/ConstructionScene.tsx",
-            "storyTitle": "Custom Component/Three/ConstructionScene",
-            "storyId": "custom-component-three-constructionscene",
+            "storyTitle": "Custom Component/3. Scene/ConstructionScene",
+            "storyId": "custom-component-3-scene-constructionscene",
             "children": [
               {
                 "name": "BuildingModel",
                 "kind": "component",
                 "category": "components/three",
                 "file": "components/three/BuildingModel.tsx",
-                "storyTitle": "Custom Component/Three/BuildingModel",
-                "storyId": "custom-component-three-buildingmodel",
+                "storyTitle": "Custom Component/3. Scene/BuildingModel",
+                "storyId": "custom-component-3-scene-buildingmodel",
                 "children": [
                   {
                     "name": "Cladding",
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Cladding.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Cladding",
+                    "storyId": "custom-component-1-building-stages-cladding",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
                         "kind": "component",
                         "category": "components/three",
                         "file": "components/three/BuildingProgressContext.tsx",
-                        "storyTitle": null,
-                        "storyId": null,
+                        "storyTitle": "Custom Component/3. Scene/BuildingProgressContext",
+                        "storyId": "custom-component-3-scene-buildingprogresscontext",
                         "children": [],
                         "hooks": [],
                         "data": []
@@ -157,8 +157,8 @@ export default {
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Core.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Core",
+                    "storyId": "custom-component-1-building-stages-core",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
@@ -188,8 +188,8 @@ export default {
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Foundation.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Foundation",
+                    "storyId": "custom-component-1-building-stages-foundation",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
@@ -225,8 +225,8 @@ export default {
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Illumination.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Illumination",
+                    "storyId": "custom-component-1-building-stages-illumination",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
@@ -262,8 +262,8 @@ export default {
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Setbacks.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Setbacks",
+                    "storyId": "custom-component-1-building-stages-setbacks",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
@@ -299,8 +299,8 @@ export default {
                     "kind": "component",
                     "category": "components/three/stages",
                     "file": "components/three/stages/Spire.tsx",
-                    "storyTitle": null,
-                    "storyId": null,
+                    "storyTitle": "Custom Component/1. Building Stages/Spire",
+                    "storyId": "custom-component-1-building-stages-spire",
                     "children": [
                       {
                         "name": "BuildingProgressContext",
@@ -356,13 +356,34 @@ export default {
                 "data": []
               },
               {
+                "name": "BuildingProgressContext",
+                "kind": "component",
+                "category": "components/three",
+                "file": "components/three/BuildingProgressContext.tsx",
+                "ref": true,
+                "children": [],
+                "hooks": [],
+                "data": []
+              },
+              {
                 "name": "DayNightCycle",
                 "kind": "component",
                 "category": "components/three/environment",
                 "file": "components/three/environment/DayNightCycle.tsx",
-                "storyTitle": null,
-                "storyId": null,
-                "children": [],
+                "storyTitle": "Custom Component/2. Environment & Camera/DayNightCycle",
+                "storyId": "custom-component-2-environment-camera-daynightcycle",
+                "children": [
+                  {
+                    "name": "BuildingProgressContext",
+                    "kind": "component",
+                    "category": "components/three",
+                    "file": "components/three/BuildingProgressContext.tsx",
+                    "ref": true,
+                    "children": [],
+                    "hooks": [],
+                    "data": []
+                  }
+                ],
                 "hooks": [],
                 "data": [
                   {

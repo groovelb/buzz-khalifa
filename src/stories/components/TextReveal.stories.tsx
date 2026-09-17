@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TextReveal } from '../../components/kinetic-typography/TextReveal';
 
 const meta = {
-  title: 'Custom Component/Kinetic Typography/TextReveal',
+  title: 'Custom Component/4. Narrative Overlay/TextReveal',
   component: TextReveal,
   tags: ['autodocs'],
   parameters: { docs: { description: { component: '화면에 들어온 글자를 순서대로 보여줍니다. 단위는 밀리초이며 once를 끄면 재진입할 때 반복합니다.' } } },

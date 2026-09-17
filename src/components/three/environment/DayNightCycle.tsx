@@ -1,8 +1,8 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useScroll } from '@react-three/drei';
 import * as THREE from 'three';
+import { useBuildingProgress } from '@/components/three/BuildingProgressContext';
 
 import { ATMOSPHERE_TIMING } from '@/data/scrollConfig';
 
@@ -139,7 +139,7 @@ const createMoonTexture = (): THREE.CanvasTexture => {
 
 export const DayNightCycle: React.FC = () => {
   const { scene, camera } = useThree();
-  const scroll = useScroll();
+  const buildingProgress = useBuildingProgress();
 
   // Refs
   const sunGroupRef = useRef<THREE.Group>(null);
@@ -185,7 +185,7 @@ export const DayNightCycle: React.FC = () => {
   }, [moonMaterial, sunMaterial]);
 
   useFrame(() => {
-    const progress = scroll.offset;
+    const progress = buildingProgress.current;
 
     // ============================================
     // SKY BACKGROUND COLOR - 새 타이밍 (7 pages)

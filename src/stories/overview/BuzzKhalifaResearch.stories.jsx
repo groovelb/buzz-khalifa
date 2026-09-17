@@ -27,7 +27,7 @@ import { ASSEMBLY_STEPS } from './assemblySteps.js';
 import paperDocument from '../../assets/reference/paper.md?raw';
 
 export default {
-  title: 'Overview/Buzz Khalifa/08 Research',
+  title: 'Overview/Buzz Khalifa/08 Domain Knowledge & Research',
   parameters: {
     layout: 'padded',
   },
@@ -57,6 +57,59 @@ const REFERENCE_NOTES = {
   'Screenshot 2026-01-13 at 1.42.01 AM.png': '용도 미기록 (작업 중 화면 캡처)',
   'Screenshot 2026-01-13 at 1.42.09 AM.png': '용도 미기록 (작업 중 화면 캡처)',
 };
+
+/**
+ * 도메인 지식 학습 데이터.
+ *
+ * 초고층 건축 공정을 다루려고 읽힌 자료를 종류별로 묶었다.
+ * 흘러간 곳은 값이 최종적으로 고정된 상수다. 자세한 대응은 아래 "근거에서 데이터로" 표에 있다.
+ */
+const KNOWLEDGE_SETS = [
+  {
+    name: '구조 논문',
+    taught: '버트레스드 코어, 풍하중과 와류, 구조 건전성 모니터링',
+    source: 'src/assets/reference/paper.md',
+    landed: 'BUILDING · TIER_DATA 의 설계 근거',
+  },
+  {
+    name: '단면도와 평면도',
+    taught: '티어별 높이, 날개 종료 높이, Y자 평면의 스캘럽',
+    source: 'src/assets/reference/ 이미지 12장',
+    landed: 'BUILDING · WING_ANGLES · 세트백 스케줄',
+  },
+  {
+    name: '공정 기록 사진',
+    taught: '여섯 공정의 실제 현장 장면과 순서',
+    source: 'src/assets/stages/1~6.jpeg',
+    landed: 'CONSTRUCTION_STAGES[].image',
+  },
+  {
+    name: '공정 해설과 수치',
+    taught: '기초 매트와 파일, 80 MPa 콘크리트, 26,000 유리판, LED 7만 개',
+    source: '공개 기록에서 정리한 카피',
+    landed: 'CONSTRUCTION_STAGES[].description · measurement',
+  },
+  {
+    name: 'PRD 초안',
+    taught: '공정 5단계 구획, 파스텔 팔레트, 정사영 카메라, 둥근 모서리',
+    source: '기준 커밋의 PRD.md (현재 저장소에 없음)',
+    landed: 'PHASES(6단계로 확장) · COLORS(폐기 후 청회색)',
+  },
+  {
+    name: '코드로 확정한 수치',
+    taught: '모형 높이 55, 티어 24켜, 날개 각도 3개, 세트백 순서',
+    source: 'src/data/burjKhalifaData.ts',
+    landed: 'BUILDING · TIER_DATA · WING_ANGLES · AREA_LEVELS',
+  },
+];
+
+/** PRD 초안에서 살린 것과 버린 것 */
+const PRD_NOTES = [
+  '살린 것: 공정을 순서대로 보여 준다는 구성, 정사영 아이소메트릭 시점, 모서리를 굴린 형상, 도심 환경맵 반사.',
+  '바꾼 것: 공정 5단계 균등 배분을 코드에서 6단계 비균등(PHASES)으로 넓혔다. 다섯째 구간만 두 페이지 높이다.',
+  '버린 것: 파스텔 팔레트(지면 #e5e5e5, 구조물 #ffffff, 유리 #a2d2ff)와 장난감 톤. 실제 구현은 청회색 계열이다.',
+  '버린 것: ContactShadows 지시. 그림자는 방향광 하나가 만든다.',
+];
 
 /** 바이트를 사람이 읽는 단위로 */
 const formatBytes = (bytes) => {
@@ -172,7 +225,7 @@ export const Default = {
     return (
       <>
         <DocumentTitle
-          title="Research"
+          title="Domain Knowledge & Research"
           status="Available"
           note="리서치 자료와 그것이 들어간 상수, 그리고 조립 순서"
           brandName="Design System"
@@ -181,11 +234,55 @@ export const Default = {
         />
         <PageContainer>
           <Typography variant="h4" sx={ { fontWeight: 700, mb: 1 } }>
-            Research
+            Domain Knowledge & Research
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={ { mb: 4 } }>
             <code>src/assets/reference/</code> · 자료 { referenceImages.length }장과 구조 논문 한 편
           </Typography>
+
+          <SectionTitle
+            title="도메인 지식 학습 데이터"
+            description="초고층 건축 공정을 다루려고 읽힌 자료 전부. 무엇을 가르쳤고 어느 상수로 남았는지."
+          />
+          <TableContainer sx={ { mb: 2 } }>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={ { fontWeight: 600, width: 130 } }>데이터</TableCell>
+                  <TableCell sx={ { fontWeight: 600 } }>가르친 것</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: '22%' } }>출처</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: '24%' } }>흘러간 곳</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { KNOWLEDGE_SETS.map((row) => (
+                  <TableRow key={ row.name }>
+                    <TableCell sx={ { fontSize: 13, fontWeight: 600 } }>{ row.name }</TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>{ row.taught }</TableCell>
+                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 11, color: 'text.secondary' } }>
+                      { row.source }
+                    </TableCell>
+                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 11 } }>{ row.landed }</TableCell>
+                  </TableRow>
+                )) }
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Typography variant="body2" color="text.secondary" sx={ { mb: 2 } }>
+            값이 실제로 어느 상수에 어떤 숫자로 들어갔는지는 아래 "근거에서 데이터로" 표에 있고,
+            자료 한 장씩의 용도는 "레퍼런스 자료" 격자에 적었다. 공정 사진 6장과 단계의 대응은
+            <a href="?path=/story/overview-buzz-khalifa-07-assets--default" target="_top"> 07 Assets </a>
+            에서, 상수의 실제 값은
+            <a href="?path=/story/overview-buzz-khalifa-05-stage-data--default" target="_top"> 05 Stage Data </a>
+            에서 본다.
+          </Typography>
+          <Box component="ul" sx={ { mb: 6, pl: 3 } }>
+            { PRD_NOTES.map((note) => (
+              <Box component="li" key={ note } sx={ { mb: 0.5 } }>
+                <Typography variant="body2" color="text.secondary">{ note }</Typography>
+              </Box>
+            )) }
+          </Box>
 
           <SectionTitle
             title="조립 순서"
@@ -244,6 +341,35 @@ export const Default = {
                     <TableCell sx={ { fontFamily: 'monospace', fontSize: 12 } }>{ row.value }</TableCell>
                     <TableCell sx={ { fontFamily: 'monospace', fontSize: 12, color: 'text.secondary' } }>
                       { row.constant }
+                    </TableCell>
+                  </TableRow>
+                )) }
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <SectionTitle
+            title="공정 사진과 단계 대응"
+            description="src/assets/stages 의 여섯 장이 어느 공정 카피에 붙는지"
+          />
+          <TableContainer sx={ { mb: 6 } }>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={ { fontWeight: 600, width: 70 } }>번호</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 160 } }>공정</TableCell>
+                  <TableCell sx={ { fontWeight: 600 } }>가르친 것</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 170 } }>파일</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { CONSTRUCTION_STAGES.map((stage, index) => (
+                  <TableRow key={ stage.number }>
+                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 13 } }>{ stage.number }</TableCell>
+                    <TableCell sx={ { fontSize: 13, fontWeight: 600 } }>{ stage.title }</TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>{ stage.subtitle }</TableCell>
+                    <TableCell sx={ { fontFamily: 'monospace', fontSize: 11, color: 'text.secondary' } }>
+                      { `src/assets/stages/${ index + 1 }.jpeg` }
                     </TableCell>
                   </TableRow>
                 )) }

@@ -22,21 +22,19 @@ export default {
   },
 };
 
-/** 스토리를 만들지 않기로 한 노드와 그 이유 */
+/** 스토리가 없는 노드와 그 이유. 지금은 App 하나뿐이다. */
 const NO_STORY_REASON = {
   App: '페이지 스토리(Page/Buzz Khalifa)가 이 컴포넌트다',
-  Header: '고정 머리말. 페이지 스토리에서 함께 보인다',
-  Footer: '고정 꼬리말. 페이지 스토리에서 함께 보인다',
-  ConstructionScene: '',
-  DayNightCycle: 'Canvas 안에서만 성립하는 하늘과 조명',
-  Foundation: 'BuildingModel 안에서만 성립하는 공정 형상',
-  Core: 'BuildingModel 안에서만 성립하는 공정 형상',
-  Setbacks: 'BuildingModel 안에서만 성립하는 공정 형상',
-  Cladding: 'BuildingModel 안에서만 성립하는 공정 형상',
-  Illumination: 'BuildingModel 안에서만 성립하는 공정 형상',
-  Spire: 'BuildingModel 안에서만 성립하는 공정 형상',
-  BuildingProgressContext: 'Context · 진행도 ref 를 공정 컴포넌트에 전달',
 };
+
+/** 트리에 나타나지 않는 파일과 그 이유 */
+const OFF_TREE = [
+  {
+    name: 'CinematicCamera',
+    reason: '어디에서도 import 되지 않는 미사용 파일. 스토리는 카메라 경로만 보여 준다',
+    storyId: 'custom-component-2-environment-camera-cinematiccamera--default',
+  },
+];
 
 /** 분류 표시 순서 */
 const GROUP_ORDER = ['Page', 'Template', 'Section', 'Custom Component', '스토리 없음'];
@@ -145,7 +143,7 @@ export const Default = {
 
           <SectionTitle
             title="조립 순서"
-            description="리서치에서 페이지까지 여섯 단계. 08 Research 와 같은 목록을 쓴다."
+            description="리서치에서 페이지까지 여섯 단계. 08 Domain Knowledge & Research 와 같은 목록을 쓴다."
           />
           <TableContainer sx={ { mb: 6 } }>
             <Table size="small">
@@ -252,9 +250,36 @@ export const Default = {
             </Table>
           </TableContainer>
 
+          <SectionTitle
+            title="트리 밖 파일"
+            description="구조 트리에 나타나지 않지만 저장소에 있는 컴포넌트"
+          />
+          <TableContainer sx={ { mb: 4 } }>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={ { fontWeight: 600, width: 220 } }>컴포넌트</TableCell>
+                  <TableCell sx={ { fontWeight: 600 } }>이유</TableCell>
+                  <TableCell sx={ { fontWeight: 600, width: 200 } }>스토리</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { OFF_TREE.map((item) => (
+                  <TableRow key={ item.name }>
+                    <TableCell sx={ { fontSize: 13, fontWeight: 600 } }>{ item.name }</TableCell>
+                    <TableCell sx={ { fontSize: 13, color: 'text.secondary' } }>{ item.reason }</TableCell>
+                    <TableCell sx={ { fontSize: 13 } }>
+                      <StoryLinks stories={ [{ label: 'CinematicCamera', id: item.storyId }] } />
+                    </TableCell>
+                  </TableRow>
+                )) }
+              </TableBody>
+            </Table>
+          </TableContainer>
+
           <Typography variant="body2" color="text.secondary">
-            트리에 없는 파일: <code>components/three/CinematicCamera.tsx</code>는 어디에서도 import 되지 않아 구조에 나타나지 않는다.
             문서 스토리(Overview 01~08)는 컴포넌트가 아니므로 이 표에서 세지 않는다.
+            재사용 모듈(storybookDocumentation 5개)은 문서 전용이라 제품 트리에 들어가지 않는다.
           </Typography>
         </PageContainer>
       </>

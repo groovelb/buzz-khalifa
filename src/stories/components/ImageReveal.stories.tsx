@@ -3,7 +3,7 @@ import { ImageReveal } from '../../components/media/ImageReveal';
 import stageImage from '../../assets/stages/1.jpeg';
 
 const meta = {
-  title: 'Custom Component/Media/ImageReveal',
+  title: 'Custom Component/4. Narrative Overlay/ImageReveal',
   component: ImageReveal,
   tags: ['autodocs'],
   parameters: { docs: { description: { component: '실제 공정 사진의 스크롤 진입 효과입니다. 원본 비율을 유지하며 방향과 거리를 조정합니다.' } } },

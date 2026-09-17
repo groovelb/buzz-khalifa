@@ -22,7 +22,7 @@ function ScrollFrame({ children }: { children: React.ReactNode }) {
 }
 
 const meta = {
-  title: 'Custom Component/Three/ConstructionScene',
+  title: 'Custom Component/3. Scene/ConstructionScene',
   component: ConstructionScene,
   tags: ['autodocs'],
   parameters: {
